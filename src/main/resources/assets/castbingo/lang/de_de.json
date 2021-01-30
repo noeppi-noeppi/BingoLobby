@@ -1,0 +1,13 @@
+{
+  "bingolobby.command.disabled": "Dieser Befehl wurde deaktiviert. Verwende stattdessen die Lobby.",
+  "bingolobby.nojoin.novip": "Du kannst keinem VIP Team beitreten.",
+  "bingolobby.nojoin.full": "Dieses Team ist voll.",
+  "bingolobby.command.vipadd": "Der Status von %s Spielern wurde zu VIP geändert.",
+  "bingolobby.command.vipremove": "Der Status von %s Spielern wurde zu Kein-VIP geändert.",
+  "bingolobby.command.vipteamadd": "Team %s ist jetzt ein VIP Team.",
+  "bingolobby.command.vipteamremove": "Team %s ist kein VIP Team mehr.",
+  "bingolobby.command.maxplayers.limited": "Die maximale Spieleranzahl pro Team wurde auf %s gesetzt.",
+  "bingolobby.command.maxplayers.unlimited": "Die Begrenzung der Spieleranzahl pro Team wurde aufgehoben.",
+  "bingolobby.nojoin.noactive": "Du kannst keinem Team beitreten ohne dass ein Spiel aktiv ist."
+}
+
