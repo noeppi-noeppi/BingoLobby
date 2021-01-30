@@ -27,3 +27,9 @@ A lobby for the Bongo mod.
     ordering="NONE"
     side="BOTH"
 
+[[dependencies.bingolobby]]
+    modId="bongo"
+    mandatory=true
+    versionRange="[1.0.20,)"
+    ordering="NONE"
+    side="BOTH"

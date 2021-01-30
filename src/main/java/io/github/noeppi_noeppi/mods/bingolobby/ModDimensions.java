@@ -21,6 +21,7 @@ public class ModDimensions {
     }
     
     public static void teleportToLobby(ServerPlayerEntity player, boolean yp) {
+        player.inventory.clear();
         if (player.world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
             player.setPositionAndUpdate(0.5, 65, 0.5);
             player.setLocationAndAngles(0.5, 65, 0.5, 0, 0);
