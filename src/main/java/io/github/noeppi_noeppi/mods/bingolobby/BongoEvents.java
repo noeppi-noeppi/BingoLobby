@@ -1,9 +1,9 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
-import io.github.noeppi_noeppi.mods.bongo.command.event.BongoChangeManyTeamsEvent;
-import io.github.noeppi_noeppi.mods.bongo.command.event.BongoChangeTeamEvent;
-import io.github.noeppi_noeppi.mods.bongo.command.event.BongoPickWorldEvent;
-import io.github.noeppi_noeppi.mods.bongo.command.event.BongoStopEvent;
+import io.github.noeppi_noeppi.mods.bongo.event.BongoChangeManyTeamsEvent;
+import io.github.noeppi_noeppi.mods.bongo.event.BongoChangeTeamEvent;
+import io.github.noeppi_noeppi.mods.bongo.event.BongoPickWorldEvent;
+import io.github.noeppi_noeppi.mods.bongo.event.BongoStopEvent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

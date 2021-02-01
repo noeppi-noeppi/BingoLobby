@@ -40,24 +40,4 @@ public class ModDimensions {
             }
         }
     }
-    
-    public static void teleportToOverworld(ServerPlayerEntity player) {
-        ServerWorld destination = player.getServerWorld().getServer().getWorld(World.OVERWORLD);
-        if (destination == null) {
-            player.connection.disconnect(new StringTextComponent("Please restart server. Overworld is not loaded."));
-        } else {
-            int y = destination.getHeight();
-            BlockPos.Mutable pos = new BlockPos.Mutable(0, y, 0);
-            //noinspection deprecation
-            while (destination.getBlockState(pos).isAir() && y >= 0) {
-                y -= 1;
-                pos.setY(y);
-            }
-            player.teleport(
-                    destination,
-                    0.5, y + 1, 0.5,
-                    0, 0
-            );
-        }
-    }
 }

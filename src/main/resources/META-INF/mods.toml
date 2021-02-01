@@ -30,6 +30,6 @@ A lobby for the Bongo mod.
 [[dependencies.bingolobby]]
     modId="bongo"
     mandatory=true
-    versionRange="[1.0.20,)"
+    versionRange="[1.0.23,)"
     ordering="NONE"
     side="BOTH"
