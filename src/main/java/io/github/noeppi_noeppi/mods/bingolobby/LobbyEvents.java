@@ -1,7 +1,6 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
