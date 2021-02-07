@@ -2,7 +2,9 @@ package io.github.noeppi_noeppi.mods.bingolobby;
 
 import io.github.noeppi_noeppi.libx.mod.registration.ModXRegistration;
 import io.github.noeppi_noeppi.mods.bingolobby.commands.LobbyCommands;
+import io.github.noeppi_noeppi.mods.bingolobby.pregen.ChunkPregenerator;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -22,6 +24,8 @@ public class BingoLobby extends ModXRegistration {
         this.addRegistrationHandler(ModBiomes::init);
         this.addRegistrationHandler(ModDimensions::init);
 
+        //MinecraftForge.EVENT_BUS.addListener(this::serverChat);
+        
         MinecraftForge.EVENT_BUS.addListener(LobbyCommands::register);
         MinecraftForge.EVENT_BUS.register(new DestinationControlEvents());
         MinecraftForge.EVENT_BUS.register(new LobbyEvents());
@@ -43,5 +47,9 @@ public class BingoLobby extends ModXRegistration {
     protected void clientSetup(FMLClientSetupEvent event) {
 
     }
+    
+    /*public void serverChat(ServerChatEvent event) {
+        ChunkPregenerator.pregenerateChunks(event.getPlayer().getServer(), 42, 1);
+    }*/
 }
 

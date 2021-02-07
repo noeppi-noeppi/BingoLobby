@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "bingolobby.refmap.json",
+  "package": "io.github.noeppi_noeppi.mods.bingolobby.mixin",
+  "minVersion": "0.8",
+  "client": [],
+  "server": [],
+  "mixins": [
+    "MixinConfiguredFeature",
+    "MixinMinecraftServer"
+  ]
+}
