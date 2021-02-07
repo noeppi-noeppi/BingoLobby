@@ -1,6 +1,7 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
@@ -27,8 +28,15 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void mobGrief(EntityMobGriefingEvent event) {
-        if (event.getEntity().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
-            event.setResult(Event.Result.DENY);
+        try {
+            //noinspection ConstantConditions
+            if (event.getEntity() != null && event.getEntity().world != null && event.getEntity().world.getDimensionKey() != null) {
+                if (event.getEntity().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+                    event.setResult(Event.Result.DENY);
+                }
+            }
+        } catch(NullPointerException e) {
+            //
         }
     }
     
