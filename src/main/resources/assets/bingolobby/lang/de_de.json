@@ -8,6 +8,18 @@
   "bingolobby.command.vipteamremove": "Team %s ist kein VIP Team mehr.",
   "bingolobby.command.maxplayers.limited": "Die maximale Spieleranzahl pro Team wurde auf %s gesetzt.",
   "bingolobby.command.maxplayers.unlimited": "Die Begrenzung der Spieleranzahl pro Team wurde aufgehoben.",
-  "bingolobby.nojoin.noactive": "Du kannst keinem Team beitreten ohne dass ein Spiel aktiv ist."
+  "bingolobby.nojoin.noactive": "Du kannst keinem Team beitreten ohne dass ein Spiel aktiv ist.",
+  "bingolobby.countdown.seconds": "Das Spiel startet in %s Sekunden.",
+  "bingolobby.countdown.minutes": "Das Spiel startet in %s Minuten.",
+  "bingolobby.countdown.set": "Countdown von %s Minuten und %s Sekunden gestartet..",
+  "bingolobby.scoreboard.online": "Spieler Online: %s",
+  "bingolobby.scoreboard.no_joining": "Teams öffnen gleich.",
+  "bingolobby.scoreboard.players_per_team": "Spieler pro Team: %s",
+  "bingolobby.scoreboard.status.info": "Status: %s",
+  "bingolobby.scoreboard.status.player": "Spieler",
+  "bingolobby.scoreboard.status.vip": "VIP",
+  "bingolobby.scoreboard.noteam": "Kein Team",
+  "bingolobby.scoreboard.nogame": "Kein Spiel aktiv",
+  "bingolobby.scoreboard.countdown": "Spiel startet in %s:%s"
 }
 

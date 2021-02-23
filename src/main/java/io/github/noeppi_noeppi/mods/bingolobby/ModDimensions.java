@@ -5,7 +5,6 @@ import io.github.noeppi_noeppi.mods.bingolobby.dimension.BingoLobbyGenerator;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;

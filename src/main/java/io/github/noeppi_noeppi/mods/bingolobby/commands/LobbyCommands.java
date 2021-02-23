@@ -1,25 +1,30 @@
 package io.github.noeppi_noeppi.mods.bingolobby.commands;
 
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import io.github.noeppi_noeppi.libx.command.UppercaseEnumArgument;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.item.DyeColor;
 import net.minecraftforge.event.RegisterCommandsEvent;
+
+import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
+import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import static io.github.noeppi_noeppi.libx.command.UppercaseEnumArgument.enumArgument;
+import static net.minecraft.command.Commands.argument;
+import static net.minecraft.command.Commands.literal;
+import static net.minecraft.command.arguments.EntityArgument.players;
 
 public class LobbyCommands {
 
     public static void register(RegisterCommandsEvent event) {
-        event.getDispatcher().register(Commands.literal("bingo").then(
-                 Commands.literal("vip").requires(cs -> cs.hasPermissionLevel(2)).then(Commands.argument("players", EntityArgument.players()).executes(new VipCommand()))
+        event.getDispatcher().register(literal("bingo").then(
+                 literal("vip").requires(cs -> cs.hasPermissionLevel(2)).then(argument("players", players()).executes(new VipCommand()))
         ).then(
-                Commands.literal("unvip").requires(cs -> cs.hasPermissionLevel(2)).then(Commands.argument("players", EntityArgument.players()).executes(new UnvipCommand()))
+                literal("unvip").requires(cs -> cs.hasPermissionLevel(2)).then(argument("players", players()).executes(new UnvipCommand()))
         ).then(
-                Commands.literal("vipteam").requires(cs -> cs.hasPermissionLevel(2)).then(Commands.argument("team", UppercaseEnumArgument.enumArgument(DyeColor.class)).executes(new VipTeamCommand()))
+                literal("vipteam").requires(cs -> cs.hasPermissionLevel(2)).then(argument("team", enumArgument(DyeColor.class)).executes(new VipTeamCommand()))
         ).then(
-                Commands.literal("unvipteam").requires(cs -> cs.hasPermissionLevel(2)).then(Commands.argument("team", UppercaseEnumArgument.enumArgument(DyeColor.class)).executes(new UnvipTeamCommand()))
+                literal("unvipteam").requires(cs -> cs.hasPermissionLevel(2)).then(argument("team", enumArgument(DyeColor.class)).executes(new UnvipTeamCommand()))
         ).then(
-                Commands.literal("maxplayers").requires(cs -> cs.hasPermissionLevel(2)).then(Commands.argument("maxPlayers", IntegerArgumentType.integer(-1)).executes(new MaxPlayersCommand()))
+                literal("maxplayers").requires(cs -> cs.hasPermissionLevel(2)).then(argument("maxPlayers", integer(-1)).executes(new MaxPlayersCommand()))
+        ).then(
+                literal("countdown").requires(cs -> cs.hasPermissionLevel(2)).then(argument("countdown", integer(-1)).executes(new CountdownCommand()).then(argument("randomize_positions", bool()).executes(new CountdownCommand())))
         ));
     }
 }

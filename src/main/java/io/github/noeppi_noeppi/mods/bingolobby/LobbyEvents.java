@@ -103,7 +103,7 @@ public class LobbyEvents {
     }
     
     @SubscribeEvent
-    public void mobSpawn(LivingSpawnEvent.CheckSpawn event) {
+    public void mobSpawn(LivingSpawnEvent.SpecialSpawn event) {
         World world;
         if (event.getWorld() instanceof World) world = (World) event.getWorld();
         else world = event.getEntity().world;

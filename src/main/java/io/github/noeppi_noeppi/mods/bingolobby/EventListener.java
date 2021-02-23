@@ -2,7 +2,6 @@ package io.github.noeppi_noeppi.mods.bingolobby;
 
 import io.github.noeppi_noeppi.mods.bongo.Bongo;
 import io.github.noeppi_noeppi.mods.bongo.data.Team;
-import io.github.noeppi_noeppi.mods.bongo.util.Messages;
 import net.minecraft.block.Block;
 import net.minecraft.block.CarpetBlock;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -10,10 +9,11 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class AssignTeamEvents {
+public class EventListener {
 
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
@@ -38,17 +38,26 @@ public class AssignTeamEvents {
                             Team currentTeam = bongo.getTeam(event.player);
                             if (currentTeam != null) {
                                 currentTeam.removePlayer(event.player);
-                                Messages.onLeave(event.player.world, event.player, currentTeam);
                             }
                         } else if (!team.hasPlayer(event.player)) {
                             team.addPlayer(event.player);
-                            Messages.onJoin(event.player.world, event.player, team);
                         }
                     }
                 }
             } else if (color != null) {
                 event.player.sendMessage(new TranslationTextComponent("bingolobby.nojoin.noactive").mergeStyle(TextFormatting.AQUA), event.player.getUniqueID());
                 ModDimensions.teleportToLobby((ServerPlayerEntity) event.player, false);
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    public void lobbyTick(TickEvent.WorldTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && event.world instanceof ServerWorld) {
+            ServerWorld world = (ServerWorld) event.world;
+            if (world.getServer().getTickCounter() % 20 == 0 && ModDimensions.LOBBY_DIMENSION.equals(world.getDimensionKey())) {
+                Lobby lobby = Lobby.get(event.world);
+                lobby.tickCountdown();
             }
         }
     }
