@@ -8,7 +8,7 @@
   "bingolobby.command.vipteamremove": "Team %s is no longer a VIP team.",
   "bingolobby.command.maxplayers.limited": "Maximum players per team is now set to %s.",
   "bingolobby.command.maxplayers.unlimited": "Maximum players per team is now set to unlimited.",
-  "bingolobby.nojoin.noactive": "You cannot join a team while no game has been created."
+  "bingolobby.nojoin.noactive": "You cannot join a team while no game has been created.",
   "bingolobby.countdown.seconds": "The game will start in %s seconds.",
   "bingolobby.countdown.minutes": "The game will start in %s minutes.",
   "bingolobby.countdown.set": "Started a countdown of %s minutes and %s seconds.",
