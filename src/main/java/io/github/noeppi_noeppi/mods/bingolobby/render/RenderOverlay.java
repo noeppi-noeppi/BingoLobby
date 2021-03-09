@@ -41,7 +41,7 @@ public class RenderOverlay {
             if (lobby.getCountdown() >= 0) {
                 countdown = new TranslationTextComponent("bingolobby.scoreboard.countdown",
                         new StringTextComponent(Integer.toString(lobby.getCountdown() / 60)).mergeStyle(Style.EMPTY.createStyleFromFormattings(TextFormatting.GOLD, TextFormatting.BOLD)),
-                        new StringTextComponent(Integer.toString(lobby.getCountdown() % 60)).mergeStyle(Style.EMPTY.createStyleFromFormattings(TextFormatting.GOLD, TextFormatting.BOLD))
+                        new StringTextComponent(String.format("%02d", lobby.getCountdown() % 60)).mergeStyle(Style.EMPTY.createStyleFromFormattings(TextFormatting.GOLD, TextFormatting.BOLD))
                 ).mergeStyle(TextFormatting.WHITE);
             }
 
