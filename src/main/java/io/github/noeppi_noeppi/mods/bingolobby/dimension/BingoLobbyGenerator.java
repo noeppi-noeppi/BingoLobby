@@ -9,9 +9,11 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.Blockreader;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.gen.feature.structure.StructureManager;
@@ -109,5 +111,15 @@ public class BingoLobbyGenerator extends ChunkGenerator {
                 }
             }
         }
+    }
+
+    @Override
+    public void func_230350_a_(long seed, @Nonnull BiomeManager biomes, @Nonnull IChunk chunk, @Nonnull GenerationStage.Carving carving) {
+        
+    }
+
+    @Override
+    public void func_230351_a_(@Nonnull WorldGenRegion region, @Nonnull StructureManager structure) {
+        
     }
 }
