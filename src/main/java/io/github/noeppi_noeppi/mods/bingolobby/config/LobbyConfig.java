@@ -26,4 +26,7 @@ public class LobbyConfig {
 
     @Config({"Whether subtitle 1 or subtitle 2 should be replaced with the countdown", "If a subtitle is empty it won't get replaced and the countdown won't be visible.", "True means subtitle 2, false means subtitle 1"})
     public static boolean countdown_in_subtitle2 = false;
+
+    @Config("Whether the world is being generated as void world or not")
+    public static boolean isVoid = false;
 }
