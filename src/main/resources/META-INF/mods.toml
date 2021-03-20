@@ -37,6 +37,6 @@ A lobby for the Bongo mod.
 [[dependencies.bingolobby]]
     modId="libx"
     mandatory=true
-    versionRange="[1.16.3-1.0.22,)"
+    versionRange="[1.16.3-1.0.23,)"
     ordering="NONE"
     side="BOTH"
