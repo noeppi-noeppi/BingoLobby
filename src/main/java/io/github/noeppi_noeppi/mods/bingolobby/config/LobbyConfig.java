@@ -28,5 +28,5 @@ public class LobbyConfig {
     public static boolean countdown_in_subtitle2 = false;
 
     @Config("Whether the world is being generated as void world or not")
-    public static boolean isVoid = false;
+    public static boolean is_void = false;
 }
