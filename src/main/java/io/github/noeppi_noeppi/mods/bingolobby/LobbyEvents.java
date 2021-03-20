@@ -1,5 +1,6 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
+import io.github.noeppi_noeppi.libx.event.RandomTickEvent;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
@@ -138,6 +139,20 @@ public class LobbyEvents {
             event.player.getFoodStats().setFoodLevel(20);
             event.player.setAir(event.player.getMaxAir());
             event.player.forceFireTicks(0);
+        }
+    }
+    
+    @SubscribeEvent
+    public void randomTickBlock(RandomTickEvent.Block event) {
+        if (event.getWorld().getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public void randomTickFluid(RandomTickEvent.Fluid event) {
+        if (event.getWorld().getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+            event.setCanceled(true);
         }
     }
 }

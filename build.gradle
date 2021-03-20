@@ -5,22 +5,13 @@ buildscript {
 apply from: 'https://raw.githubusercontent.com/noeppi-noeppi/ModUtils/master/mod.gradle'
 
 repositories {
-    maven {
-        name = 'Progwml6 maven'
-        url = 'https://dvs1.progwml6.com/files/maven/'
-    }
-    maven {
-        name = 'ModMaven'
-        url = 'https://modmaven.k-4u.nl'
-    }
-    maven {
-        name = 'MelanX Maven'
-        url = 'https://maven.melanx.de/'
-    }
+    maven { url = 'https://dvs1.progwml6.com/files/maven/' }
+    maven { url = 'https://modmaven.k-4u.nl' }
+    maven { url = 'https://maven.melanx.de/' }
 }
 
 dependencies {
-    compile fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.16.3-1.0.17")
+    compile fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.16.3-1.0.23")
     compile fg.deobf("io.github.noeppi_noeppi.mods:Bongo:1.16.3-1.0.29")
     
     compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51:api")
