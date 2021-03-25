@@ -2,6 +2,7 @@ package io.github.noeppi_noeppi.mods.bingolobby.dimension;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -24,19 +25,19 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 
 public class BingoLobbyGenerator extends ChunkGenerator {
-    
+
     public static final Codec<BingoLobbyGenerator> CODEC = RecordCodecBuilder.create(
             (instance) -> instance.group(
                     BiomeProvider.CODEC.fieldOf("biome_source").forGetter(s -> s.biomeProvider)
             ).apply(instance, instance.stable(BingoLobbyGenerator::new)));
-    
+
     private final BiomeProvider biomeProvider;
-    
+
     private BingoLobbyGenerator(BiomeProvider biomeSource) {
         super(biomeSource, biomeSource, new DimensionStructuresSettings(false), 0);
         this.biomeProvider = biomeSource;
     }
-    
+
     @Nonnull
     @Override
     protected Codec<? extends ChunkGenerator> func_230347_a_() {
@@ -52,7 +53,47 @@ public class BingoLobbyGenerator extends ChunkGenerator {
 
     @Override
     public void generateSurface(@Nonnull WorldGenRegion region, @Nonnull IChunk chunk) {
-        fillChunk(chunk);
+        if (!LobbyConfig.is_void) {
+            ChunkPos cp = chunk.getPos();
+            int xs = cp.getXStart();
+            int zs = cp.getZStart();
+            int xe = cp.getXEnd();
+            int ze = cp.getZEnd();
+            BlockPos.Mutable pos = new BlockPos.Mutable();
+            BlockState bedrock = Blocks.BEDROCK.getDefaultState();
+            BlockState stone = Blocks.STONE.getDefaultState();
+            BlockState dirt = Blocks.DIRT.getDefaultState();
+            BlockState grass = Blocks.GRASS_BLOCK.getDefaultState();
+            BlockState diamond = Blocks.DIAMOND_BLOCK.getDefaultState();
+            BlockState air = Blocks.AIR.getDefaultState();
+            for (int x = xs; x <= xe; x++) {
+                for (int z = zs; z <= ze; z++) {
+                    pos.setX(x);
+                    pos.setZ(z);
+
+                    pos.setY(0);
+                    chunk.setBlockState(pos, bedrock, false);
+
+                    for (int y = 1; y <= 58; y++) {
+                        pos.setY(y);
+                        chunk.setBlockState(pos, stone, false);
+                    }
+
+                    for (int y = 59; y <= 63; y++) {
+                        pos.setY(y);
+                        chunk.setBlockState(pos, dirt, false);
+                    }
+
+                    pos.setY(64);
+                    chunk.setBlockState(pos, x == 0 && z == 0 ? diamond : grass, false);
+
+                    for (int y = 65; y < chunk.getHeight(); y++) {
+                        pos.setY(y);
+                        chunk.setBlockState(pos, air, false);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -70,56 +111,14 @@ public class BingoLobbyGenerator extends ChunkGenerator {
     public IBlockReader func_230348_a_(int p_230348_1_, int p_230348_2_) {
         return new Blockreader(new BlockState[0]);
     }
-    
-    public static void fillChunk(IChunk chunk) {
-        ChunkPos cp = chunk.getPos();
-        int xs = cp.getXStart();
-        int zs = cp.getZStart();
-        int xe = cp.getXEnd();
-        int ze = cp.getZEnd();
-        BlockPos.Mutable pos = new BlockPos.Mutable();
-        BlockState bedrock = Blocks.BEDROCK.getDefaultState();
-        BlockState stone = Blocks.STONE.getDefaultState();
-        BlockState dirt = Blocks.DIRT.getDefaultState();
-        BlockState grass = Blocks.GRASS_BLOCK.getDefaultState();
-        BlockState diamond = Blocks.DIAMOND_BLOCK.getDefaultState();
-        BlockState air = Blocks.AIR.getDefaultState();
-        for (int x = xs; x <= xe; x++) {
-            for (int z = zs; z <= ze; z++) {
-                pos.setX(x);
-                pos.setZ(z);
-                
-                pos.setY(0);
-                chunk.setBlockState(pos, bedrock, false);
-                
-                for (int y = 1; y <= 58; y++) {
-                    pos.setY(y);
-                    chunk.setBlockState(pos, stone, false);
-                }
-                
-                for (int y = 59; y <= 63; y++) {
-                    pos.setY(y);
-                    chunk.setBlockState(pos, dirt, false);
-                }
-                
-                pos.setY(64);
-                chunk.setBlockState(pos, x == 0 && z == 0 ? diamond : grass, false);
-                
-                for (int y = 65; y < chunk.getHeight(); y++) {
-                    pos.setY(y);
-                    chunk.setBlockState(pos, air, false);
-                }
-            }
-        }
-    }
 
     @Override
     public void func_230350_a_(long seed, @Nonnull BiomeManager biomes, @Nonnull IChunk chunk, @Nonnull GenerationStage.Carving carving) {
-        
+
     }
 
     @Override
     public void func_230351_a_(@Nonnull WorldGenRegion region, @Nonnull StructureManager structure) {
-        
+
     }
 }

@@ -4,11 +4,6 @@
     "biome_source": {
       "type": "bingolobby:lobby_biome"
     },
-    "type": "bingolobby:lobby_generator",
-    "structures": {
-      "structures": {
-        
-      }
-    }
+    "type": "bingolobby:lobby_generator"
   }
 }
