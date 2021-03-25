@@ -53,12 +53,16 @@ public class BingoLobbyGenerator extends ChunkGenerator {
 
     @Override
     public void generateSurface(@Nonnull WorldGenRegion region, @Nonnull IChunk chunk) {
-        if (!LobbyConfig.is_void) {
-            ChunkPos cp = chunk.getPos();
-            int xs = cp.getXStart();
-            int zs = cp.getZStart();
-            int xe = cp.getXEnd();
-            int ze = cp.getZEnd();
+        ChunkPos cp = chunk.getPos();
+        int xs = cp.getXStart();
+        int zs = cp.getZStart();
+        int xe = cp.getXEnd();
+        int ze = cp.getZEnd();
+        if (LobbyConfig.is_void) {
+            if (xs <= 0 && xe >= 0 &&zs <= 0 &&ze >= 0) {
+                chunk.setBlockState(new BlockPos(0, 64, 0), Blocks.DIAMOND_BLOCK.getDefaultState(), false);
+            }
+        } else {
             BlockPos.Mutable pos = new BlockPos.Mutable();
             BlockState bedrock = Blocks.BEDROCK.getDefaultState();
             BlockState stone = Blocks.STONE.getDefaultState();
