@@ -23,7 +23,7 @@ public class LobbyNetwork extends NetworkX {
 
     @Override
     protected String getProtocolVersion() {
-        return "1";
+        return "2";
     }
 
     public void updateLobby(World world) {

@@ -24,7 +24,7 @@ public class LobbyCommands {
         ).then(
                 literal("maxplayers").requires(cs -> cs.hasPermissionLevel(2)).then(argument("maxPlayers", integer(-1)).executes(new MaxPlayersCommand()))
         ).then(
-                literal("countdown").requires(cs -> cs.hasPermissionLevel(2)).then(argument("countdown", integer(-1)).executes(new CountdownCommand()).then(argument("randomize_positions", bool()).executes(new CountdownCommand())))
+                literal("countdown").requires(cs -> cs.hasPermissionLevel(2)).then(argument("countdown", integer(-1)).executes(new CountdownCommand()))
         ));
     }
 }

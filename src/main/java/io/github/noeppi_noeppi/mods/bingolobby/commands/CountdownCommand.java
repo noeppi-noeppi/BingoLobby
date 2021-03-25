@@ -26,7 +26,7 @@ public class CountdownCommand implements Command<CommandSource> {
         
         Lobby lobby = Lobby.get(player.getEntityWorld());
         int countdown = context.getArgument("countdown", Integer.class);
-        lobby.setCountdown(countdown, CommandUtil.getArgumentOrDefault(context, "randomize_positions", Boolean.class, true));
+        lobby.setCountdown(countdown);
         
         context.getSource().sendFeedback(new TranslationTextComponent("bingolobby.countdown.set", Integer.toString(countdown / 60), Integer.toString(countdown % 60)), true);
 

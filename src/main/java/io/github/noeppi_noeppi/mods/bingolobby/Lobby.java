@@ -54,7 +54,6 @@ public class Lobby extends WorldSavedData {
     private final Set<DyeColor> vipTeams;
     private int maxPlayers;
     private int countdown;
-    private boolean randomizePositions;
     
     public Lobby() {
         this(ID);
@@ -68,7 +67,6 @@ public class Lobby extends WorldSavedData {
         this.vipTeams.add(DyeColor.YELLOW);
         this.maxPlayers = -1;
         this.countdown = -1;
-        this.randomizePositions = true;
     }
 
     public boolean vip(PlayerEntity player) {
@@ -137,7 +135,6 @@ public class Lobby extends WorldSavedData {
         
         nbt.putInt("maxPlayers", this.maxPlayers);
         nbt.putInt("countdown", this.countdown);
-        nbt.putBoolean("randomizePositions", this.randomizePositions);
         
         return nbt;
     }
@@ -161,12 +158,10 @@ public class Lobby extends WorldSavedData {
         
         this.maxPlayers = nbt.getInt("maxPlayers");
         this.countdown = nbt.getInt("countdown");
-        this.randomizePositions = nbt.getBoolean("randomizePositions");
     }
 
-    public void setCountdown(int seconds, boolean randomizePositions) {
+    public void setCountdown(int seconds) {
         this.countdown = seconds < 0 ? -1 : seconds;
-        this.randomizePositions = randomizePositions;
     }
     
     public void tickCountdown() {
@@ -192,7 +187,7 @@ public class Lobby extends WorldSavedData {
                     );
                 } else if (this.countdown == 0) {
                     this.countdown = -1;
-                    bongo.start(this.randomizePositions);
+                    bongo.start();
                 }
                 dirty = true;
             }
@@ -209,11 +204,7 @@ public class Lobby extends WorldSavedData {
     public int getCountdown() {
         return this.countdown;
     }
-
-    public boolean isRandomizePositions() {
-        return this.randomizePositions;
-    }
-
+    
     @Override
     public void markDirty() {
         this.markDirty(false);
