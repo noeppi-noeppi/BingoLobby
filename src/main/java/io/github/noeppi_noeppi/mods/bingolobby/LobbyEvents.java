@@ -3,6 +3,7 @@ package io.github.noeppi_noeppi.mods.bingolobby;
 import io.github.noeppi_noeppi.libx.event.RandomTickEvent;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
@@ -139,6 +140,9 @@ public class LobbyEvents {
             event.player.getFoodStats().setFoodLevel(20);
             event.player.setAir(event.player.getMaxAir());
             event.player.forceFireTicks(0);
+            if (event.player.getPosY() < -3 && event.player instanceof ServerPlayerEntity) {
+                ModDimensions.teleportToLobby((ServerPlayerEntity) event.player, false);
+            }
         }
     }
     
