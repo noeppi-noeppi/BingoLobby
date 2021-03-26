@@ -6,13 +6,13 @@ apply from: 'https://raw.githubusercontent.com/noeppi-noeppi/ModUtils/master/mod
 
 repositories {
     maven { url = 'https://dvs1.progwml6.com/files/maven/' }
-    maven { url = 'https://modmaven.k-4u.nl' }
+    //maven { url = 'https://modmaven.k-4u.nl' }
     maven { url = 'https://maven.melanx.de/' }
 }
 
 dependencies {
     compile fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.16.3-1.0.23")
-    compile fg.deobf("io.github.noeppi_noeppi.mods:Bongo:1.16.4-1.1.1")
+    compile fg.deobf("io.github.noeppi_noeppi.mods:Bongo:1.16.4-1.1.2")
     
     compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51")

@@ -50,11 +50,11 @@ public class FakeServer extends MinecraftServer {
     }
 
     @Override
-    protected boolean init() throws IOException {
+    protected boolean init() {
         System.out.println("Starting Pregen server " + this.id + " (" + this.options.getAnvilFiles().size() + " anvil files)");
         this.setOnlineMode(false);
         this.setServerPort(-1);
-        this.setKeyPair(CryptManager.generateKeyPair());
+        this.func_244801_P();
         this.setResourcePackFromWorld();
         this.serverConfig.addServerBranding(this.getServerModName(), this.func_230045_q_().isPresent());
         this.setPlayerList(new FakePlayerList(this));

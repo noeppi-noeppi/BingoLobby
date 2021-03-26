@@ -21,8 +21,7 @@
   "bingolobby.scoreboard.noteam": "No team",
   "bingolobby.scoreboard.nogame": "No game active",
   "bingolobby.scoreboard.countdown": "Game starts in %s:%s",
-  "bingolobby.command.maxplayers.limited": "Maximum players per team is now set to %s",
-  "bingolobby.command.maxplayers.unlimited": "Maximum players per team is now set to unlimited",
-  "bingolobby.nojoin.noactive": "You can't join a team while no game is active.",
-  "bingolobby.world_assembly.kick": "Assembling pregenerated world. You can't be on the server while this is happening."
+  "bingolobby.world_assembly.kick": "Assembling pregenerated world. You can't be on the server while this is happening.",
+  "bingolobby.pregen.seed_mismatch": "Overworld and Nether use different seeds. This does not work with pregen.",
+  "bingolobby.pregen.started": "Started multithreaded pregeneration of %s anvil files (%s chunks) for seed %s"
 }

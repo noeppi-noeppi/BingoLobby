@@ -16,10 +16,6 @@ import net.minecraft.world.Dimension;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.biome.provider.EndBiomeProvider;
-import net.minecraft.world.biome.provider.NetherBiomeProvider;
-import net.minecraft.world.biome.provider.OverworldBiomeProvider;
 import net.minecraft.world.chunk.listener.IChunkStatusListener;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.DimensionSettings;
@@ -151,7 +147,7 @@ public class ChunkPregenerator {
                             Path effectiveFinalLobbyWorldPath = lobbyWorldPath;
                             Files.walkFileTree(entry.getValue().getRight(), new FileVisitor<Path>() {
                                 @Override
-                                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                                     if (effectiveFinalLobbyWorldPath != null && dir.toAbsolutePath().normalize().equals(effectiveFinalLobbyWorldPath.toAbsolutePath().normalize())) {
                                         return FileVisitResult.SKIP_SUBTREE;
                                     }
@@ -167,7 +163,7 @@ public class ChunkPregenerator {
                                 }
 
                                 @Override
-                                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                                public FileVisitResult visitFileFailed(Path file, IOException exc) {
                                     return FileVisitResult.CONTINUE;
                                 }
 
@@ -238,8 +234,6 @@ public class ChunkPregenerator {
                         Lobby lobby = Lobby.get(server.func_241755_D_());
                         lobby.read(lobbyNBT);
                         lobby.markDirty();
-                        System.out.println("Changing seeds for level.dat");
-                        modifyGeneratorSettings(server.getServerConfiguration().getDimensionGeneratorSettings(), seed);
                         System.out.println("Done. Closing server.");
                         
                     } catch (IOException e) {
@@ -256,29 +250,6 @@ public class ChunkPregenerator {
             thread.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-    
-    private static void modifyGeneratorSettings(DimensionGeneratorSettings settings, long seed) {
-        settings.seed = seed;
-        for (Dimension dimension : settings.func_236224_e_()) {
-            ChunkGenerator generator = dimension.getChunkGenerator();
-            generator.field_235950_e_ = seed;
-            modifyBiomeProvider(generator.getBiomeProvider(), seed);
-            modifyBiomeProvider(generator.biomeProvider, seed);
-        }
-    }
-    
-    private static void modifyBiomeProvider(BiomeProvider provider, long seed) {
-        if (provider instanceof OverworldBiomeProvider) {
-            ((OverworldBiomeProvider) provider).seed = seed;
-            ((OverworldBiomeProvider) provider).legacyBiomes = false;
-            ((OverworldBiomeProvider) provider).largeBiomes = false;
-        } else if (provider instanceof NetherBiomeProvider) {
-            ((NetherBiomeProvider) provider).seed = seed;
-            ((NetherBiomeProvider) provider).useHeightForNoise = false;
-        } else if (provider instanceof EndBiomeProvider) {
-            ((EndBiomeProvider) provider).seed = seed;
         }
     }
 }
