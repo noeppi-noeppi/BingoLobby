@@ -23,14 +23,21 @@ A lobby for the Bongo mod.
 [[dependencies.bingolobby]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.3,)"
+    versionRange="[1.16.4,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.bingolobby]]
     modId="bongo"
     mandatory=true
-    versionRange="[1.0.23,)"
+    versionRange="[1.1.1,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.bingolobby]]
+    modId="libx"
+    mandatory=true
+    versionRange="[1.16.3-1.0.23,)"
     ordering="NONE"
     side="BOTH"
 

@@ -1,7 +1,9 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
+import io.github.noeppi_noeppi.libx.event.RandomTickEvent;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
@@ -27,8 +29,15 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void mobGrief(EntityMobGriefingEvent event) {
-        if (event.getEntity().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
-            event.setResult(Event.Result.DENY);
+        try {
+            //noinspection ConstantConditions
+            if (event.getEntity() != null && event.getEntity().world != null && event.getEntity().world.getDimensionKey() != null) {
+                if (event.getEntity().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+                    event.setResult(Event.Result.DENY);
+                }
+            }
+        } catch(NullPointerException e) {
+            //
         }
     }
     
@@ -96,7 +105,7 @@ public class LobbyEvents {
     }
     
     @SubscribeEvent
-    public void mobSpawn(LivingSpawnEvent.CheckSpawn event) {
+    public void mobSpawn(LivingSpawnEvent.SpecialSpawn event) {
         World world;
         if (event.getWorld() instanceof World) world = (World) event.getWorld();
         else world = event.getEntity().world;
@@ -131,6 +140,23 @@ public class LobbyEvents {
             event.player.getFoodStats().setFoodLevel(20);
             event.player.setAir(event.player.getMaxAir());
             event.player.forceFireTicks(0);
+            if (event.player.getPosY() < -3 && event.player instanceof ServerPlayerEntity) {
+                ModDimensions.teleportToLobby((ServerPlayerEntity) event.player, false);
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    public void randomTickBlock(RandomTickEvent.Block event) {
+        if (event.getWorld().getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+            event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public void randomTickFluid(RandomTickEvent.Fluid event) {
+        if (event.getWorld().getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+            event.setCanceled(true);
         }
     }
 }
