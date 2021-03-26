@@ -2,7 +2,6 @@ package io.github.noeppi_noeppi.mods.bingolobby.pregen;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.CryptManager;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
@@ -10,6 +9,7 @@ import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.listener.IChunkStatusListener;
 import net.minecraft.world.chunk.listener.LoggingChunkStatusListener;
+import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.Proxy;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.BooleanSupplier;
 
 public class FakeServer extends MinecraftServer {
 
@@ -26,8 +27,6 @@ public class FakeServer extends MinecraftServer {
     @SuppressWarnings("FieldCanBeLocal")
     private final int id;
     private final PregenOptions options;
-    
-    //private final Map
     
     public FakeServer(MinecraftServer parent, PregenOptions options, Thread serverThread) {
         super(serverThread, parent.field_240767_f_,
@@ -78,7 +77,9 @@ public class FakeServer extends MinecraftServer {
                     world.forceChunk(chunk.x, chunk.z, false);
                 }
                 System.out.println("Save Anvil file " + (i + 1) + " / " + anvils.size() + " on server " + this.id + ".");
-                world.save(null, false, false);
+                ServerChunkProvider provider = world.getChunkProvider();
+                world.saveLevel();
+                provider.save(false);
             }
             paths.put(worldKey, world.getChunkProvider().chunkManager.dimensionDirectory.toPath());
         }
@@ -87,6 +88,13 @@ public class FakeServer extends MinecraftServer {
         
         // Do not really start server, just save chunks we have generated.
         return false;
+    }
+
+    
+    
+    @Override
+    protected void tick(@Nonnull BooleanSupplier hasTimeLeft) {
+        // We never tick the fake server
     }
 
     @Override

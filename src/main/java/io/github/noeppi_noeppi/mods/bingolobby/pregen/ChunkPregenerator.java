@@ -103,6 +103,19 @@ public class ChunkPregenerator {
             }
         
             Thread thread = new Thread(() -> {
+                final Object lock = new Object();
+                ServerPreTickQueue.schedulePreTickTask(server, () -> {
+                    System.out.println("Setting main thread to sleep.");
+                    try {
+                        synchronized (lock) {
+                            lock.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    // Skip tick
+                    return true;
+                });
                 System.out.println("Starting " + optionList.size() + " pregen servers.");
                 for (PregenOptions options : optionList) {
                     FakeServer.startFakeServer(server, options);
@@ -111,6 +124,10 @@ public class ChunkPregenerator {
                     if (!options.waitForServer()) {
                         throw new IllegalStateException("Bingo pregen failed. Pregen server was not successful.");
                     }
+                }
+                System.out.println("Waking up main thread.");
+                synchronized (lock) {
+                    lock.notifyAll();
                 }
                 System.out.println("All pregen servers are done. Assembling world");
                 ServerPreTickQueue.schedulePreTickTask(server, () -> {
