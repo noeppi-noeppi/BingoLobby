@@ -16,9 +16,9 @@
   "bingolobby.scoreboard.no_joining": "Teams will be open soon.",
   "bingolobby.scoreboard.players_per_team": "Players per team: %s",
   "bingolobby.scoreboard.status.info": "Status: %s",
-  "bingolobby.scoreboard.status.player": "Player", 
+  "bingolobby.scoreboard.status.player": "Player",
   "bingolobby.scoreboard.status.vip": "VIP",
   "bingolobby.scoreboard.noteam": "No team",
-  "bingolobby.scoreboard.nogame": "No game active",
+  "bingolobby.scoreboard.nogame": "No created game",
   "bingolobby.scoreboard.countdown": "Game starts in %s:%s"
 }
