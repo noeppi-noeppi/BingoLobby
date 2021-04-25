@@ -30,13 +30,20 @@ A lobby for the Bongo mod.
 [[dependencies.bingolobby]]
     modId="bongo"
     mandatory=true
-    versionRange="[1.1.1,)"
+    versionRange="[1.1.5,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.bingolobby]]
     modId="libx"
     mandatory=true
-    versionRange="[1.16.3-1.0.23,)"
+    versionRange="[1.16.3-1.0.39,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.bingolobby]]
+    modId="skyblockbuilder"
+    mandatory=false
+    versionRange="[1.4.5,)"
     ordering="NONE"
     side="BOTH"

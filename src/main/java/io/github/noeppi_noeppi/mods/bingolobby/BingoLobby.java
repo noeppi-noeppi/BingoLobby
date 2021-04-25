@@ -3,12 +3,14 @@ package io.github.noeppi_noeppi.mods.bingolobby;
 import io.github.noeppi_noeppi.libx.config.ConfigManager;
 import io.github.noeppi_noeppi.libx.mod.registration.ModXRegistration;
 import io.github.noeppi_noeppi.mods.bingolobby.commands.LobbyCommands;
+import io.github.noeppi_noeppi.mods.bingolobby.compat.SkyblockIntegration;
 import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
 import io.github.noeppi_noeppi.mods.bingolobby.network.LobbyNetwork;
 import io.github.noeppi_noeppi.mods.bingolobby.render.RenderOverlay;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -38,6 +40,10 @@ public class BingoLobby extends ModXRegistration {
         MinecraftForge.EVENT_BUS.register(new BongoEvents());
         MinecraftForge.EVENT_BUS.register(new EventListener());
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.register(new RenderOverlay()));
+
+        if (ModList.get().isLoaded("skyblockbuilder")) {
+            SkyblockIntegration.init();
+        }
     }
     
     @Nonnull
