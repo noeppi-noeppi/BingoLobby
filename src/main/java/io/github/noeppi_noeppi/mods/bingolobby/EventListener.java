@@ -19,11 +19,14 @@ public class EventListener {
     public void playerTick(TickEvent.PlayerTickEvent event) {
         if (!event.player.world.isRemote && event.player.ticksExisted % 2 == 1 && event.player.world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION) && event.player instanceof ServerPlayerEntity) {
             Bongo bongo = Bongo.get(event.player.world);
-            Block block = event.player.world.getBlockState(event.player.getPosition()).getBlock();
-            DyeColor color = block instanceof CarpetBlock ? ((CarpetBlock) block).getColor() : null;
-            if (color == null) {
-                block = event.player.world.getBlockState(event.player.getPosition().down()).getBlock();
+            DyeColor color = null;
+            if (!event.player.isSpectator()) {
+                Block block = event.player.world.getBlockState(event.player.getPosition()).getBlock();
                 color = block instanceof CarpetBlock ? ((CarpetBlock) block).getColor() : null;
+                if (color == null) {
+                    block = event.player.world.getBlockState(event.player.getPosition().down()).getBlock();
+                    color = block instanceof CarpetBlock ? ((CarpetBlock) block).getColor() : null;
+                }
             }
             if (bongo.active() && !bongo.running() && !bongo.won()) {
                 Team team = color == null ? null : bongo.getTeam(color);
