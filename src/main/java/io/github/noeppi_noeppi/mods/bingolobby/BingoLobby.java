@@ -40,10 +40,6 @@ public class BingoLobby extends ModXRegistration {
         MinecraftForge.EVENT_BUS.register(new BongoEvents());
         MinecraftForge.EVENT_BUS.register(new EventListener());
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.register(new RenderOverlay()));
-
-        if (ModList.get().isLoaded("skyblockbuilder")) {
-            SkyblockIntegration.init();
-        }
     }
     
     @Nonnull
@@ -57,7 +53,9 @@ public class BingoLobby extends ModXRegistration {
 
     @Override
     protected void setup(FMLCommonSetupEvent event) {
-
+        if (ModList.get().isLoaded("skyblockbuilder")) {
+            SkyblockIntegration.setup();
+        }
     }
 
     @Override

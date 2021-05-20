@@ -33,7 +33,7 @@ public class Lobby extends WorldSavedData {
     
     public static Lobby get(World world) {
         if (!world.isRemote) {
-            DimensionSavedDataManager storage = ((ServerWorld) world).getServer().func_241755_D_().getSavedData();
+            DimensionSavedDataManager storage = ((ServerWorld) world).getServer().getOverworld().getSavedData();
             Lobby lobby = storage.getOrCreate(Lobby::new, ID);
             lobby.world = (ServerWorld) world;
             return lobby;
@@ -177,12 +177,12 @@ public class Lobby extends WorldSavedData {
                 if ((this.countdown <= 10 && this.countdown >= 1) || this.countdown < 60 && this.countdown > 10 && this.countdown % 10 == 0) {
                     ServerMessages.broadcast(this.world,
                             new TranslationTextComponent("bingolobby.countdown.seconds",
-                                    new StringTextComponent(Integer.toString(this.countdown)).mergeStyle(Style.EMPTY.createStyleFromFormattings(TextFormatting.DARK_PURPLE, TextFormatting.BOLD))
+                                    new StringTextComponent(Integer.toString(this.countdown)).mergeStyle(Style.EMPTY.mergeWithFormatting(TextFormatting.DARK_PURPLE, TextFormatting.BOLD))
                             ).mergeStyle(TextFormatting.DARK_AQUA));
                 } else if (this.countdown >= 60 && this.countdown % 60 == 0) {
                     ServerMessages.broadcast(this.world,
                             new TranslationTextComponent("bingolobby.countdown.minutes",
-                                    new StringTextComponent(Integer.toString(this.countdown / 60)).mergeStyle(Style.EMPTY.createStyleFromFormattings(TextFormatting.DARK_PURPLE, TextFormatting.BOLD))
+                                    new StringTextComponent(Integer.toString(this.countdown / 60)).mergeStyle(Style.EMPTY.mergeWithFormatting(TextFormatting.DARK_PURPLE, TextFormatting.BOLD))
                             ).mergeStyle(TextFormatting.DARK_AQUA)
                     );
                 } else if (this.countdown == 0) {

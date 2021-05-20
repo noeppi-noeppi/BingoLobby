@@ -19,7 +19,7 @@ public class ModBiomes {
             .depth(0.2f)
             .precipitation(Biome.RainType.NONE)
             .downfall(1)
-            .withMobSpawnSettings(new MobSpawnInfoBuilder(MobSpawnInfo.EMPTY).copy())
+            .withMobSpawnSettings(new MobSpawnInfoBuilder(MobSpawnInfo.EMPTY).build())
             .setEffects(
                     new BiomeAmbience.Builder()
                             .setWaterColor(0x43d5ee)
@@ -29,7 +29,7 @@ public class ModBiomes {
                             .build()
             ).withGenerationSettings(
                     new BiomeGenerationSettings.Builder()
-                            .withSurfaceBuilder(ConfiguredSurfaceBuilders.field_244184_p /* NOPE */)
+                            .withSurfaceBuilder(ConfiguredSurfaceBuilders.NOPE)
                             .build()
             ).build();
     

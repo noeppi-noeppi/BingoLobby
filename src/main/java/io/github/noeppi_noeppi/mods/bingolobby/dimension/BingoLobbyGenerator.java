@@ -40,14 +40,14 @@ public class BingoLobbyGenerator extends ChunkGenerator {
 
     @Nonnull
     @Override
-    protected Codec<? extends ChunkGenerator> func_230347_a_() {
+    protected Codec<? extends ChunkGenerator> getChunkGeneratorCodec() {
         return CODEC;
     }
 
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ChunkGenerator func_230349_a_(long seed) {
+    public ChunkGenerator createForSeed(long seed) {
         return new BingoLobbyGenerator(this.biomeProvider);
     }
 
@@ -101,7 +101,7 @@ public class BingoLobbyGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void func_230352_b_(@Nonnull IWorld world, @Nonnull StructureManager structures, @Nonnull IChunk chunk) {
+    public void generateStructures(@Nonnull IWorld world, @Nonnull StructureManager structures, @Nonnull IChunk chunk) {
         //
     }
 
@@ -117,12 +117,12 @@ public class BingoLobbyGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void func_230350_a_(long seed, @Nonnull BiomeManager biomes, @Nonnull IChunk chunk, @Nonnull GenerationStage.Carving carving) {
-
+    public void generateCarvings(long seed, @Nonnull BiomeManager biomes, @Nonnull IChunk chunk, @Nonnull GenerationStage.Carving stage) {
+        //
     }
 
     @Override
-    public void func_230351_a_(@Nonnull WorldGenRegion region, @Nonnull StructureManager structure) {
-
+    public void generateFeatures(@Nonnull WorldGenRegion region, @Nonnull StructureManager structures) {
+        //
     }
 }

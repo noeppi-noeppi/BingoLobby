@@ -40,13 +40,13 @@ public class RenderOverlay {
             IFormattableTextComponent countdown = null;
             if (lobby.getCountdown() >= 0) {
                 countdown = new TranslationTextComponent("bingolobby.scoreboard.countdown",
-                        new StringTextComponent(Integer.toString(lobby.getCountdown() / 60)).mergeStyle(Style.EMPTY.createStyleFromFormattings(TextFormatting.GOLD, TextFormatting.BOLD)),
-                        new StringTextComponent(String.format("%02d", lobby.getCountdown() % 60)).mergeStyle(Style.EMPTY.createStyleFromFormattings(TextFormatting.GOLD, TextFormatting.BOLD))
+                        new StringTextComponent(Integer.toString(lobby.getCountdown() / 60)).mergeStyle(Style.EMPTY.mergeWithFormatting(TextFormatting.GOLD, TextFormatting.BOLD)),
+                        new StringTextComponent(String.format("%02d", lobby.getCountdown() % 60)).mergeStyle(Style.EMPTY.mergeWithFormatting(TextFormatting.GOLD, TextFormatting.BOLD))
                 ).mergeStyle(TextFormatting.WHITE);
             }
 
             IFormattableTextComponent playersOnline = new TranslationTextComponent("bingolobby.scoreboard.online",
-                    new StringTextComponent(Integer.toString(netHandler.getPlayerInfoMap().size())).mergeStyle(Style.EMPTY.createStyleFromFormattings(TextFormatting.GOLD, TextFormatting.BOLD))
+                    new StringTextComponent(Integer.toString(netHandler.getPlayerInfoMap().size())).mergeStyle(Style.EMPTY.mergeWithFormatting(TextFormatting.GOLD, TextFormatting.BOLD))
             ).mergeStyle(TextFormatting.WHITE);
 
             IFormattableTextComponent perTeam;
@@ -54,15 +54,15 @@ public class RenderOverlay {
                 perTeam = new TranslationTextComponent("bingolobby.scoreboard.no_joining").mergeStyle(TextFormatting.WHITE);
             } else if (lobby.getMaxPlayers() < 0) {
                 perTeam = new TranslationTextComponent("bingolobby.scoreboard.players_per_team",
-                        new StringTextComponent("∞").mergeStyle(Style.EMPTY.createStyleFromFormattings(TextFormatting.GOLD))
+                        new StringTextComponent("∞").mergeStyle(Style.EMPTY.mergeWithFormatting(TextFormatting.GOLD))
                 ).mergeStyle(TextFormatting.WHITE);
             } else {
                 perTeam = new TranslationTextComponent("bingolobby.scoreboard.players_per_team",
-                        new StringTextComponent(Integer.toString(lobby.getMaxPlayers())).mergeStyle(Style.EMPTY.createStyleFromFormattings(TextFormatting.GOLD, TextFormatting.BOLD))
+                        new StringTextComponent(Integer.toString(lobby.getMaxPlayers())).mergeStyle(Style.EMPTY.mergeWithFormatting(TextFormatting.GOLD, TextFormatting.BOLD))
                 ).mergeStyle(TextFormatting.WHITE);
             }
 
-            IFormattableTextComponent statusValue = new TranslationTextComponent(lobby.vip(mc.player) ? "bingolobby.scoreboard.status.vip" : "bingolobby.scoreboard.status.player").mergeStyle(Style.EMPTY.createStyleFromFormattings(lobby.vip(mc.player) ? TextFormatting.LIGHT_PURPLE : TextFormatting.GOLD, TextFormatting.BOLD));
+            IFormattableTextComponent statusValue = new TranslationTextComponent(lobby.vip(mc.player) ? "bingolobby.scoreboard.status.vip" : "bingolobby.scoreboard.status.player").mergeStyle(Style.EMPTY.mergeWithFormatting(lobby.vip(mc.player) ? TextFormatting.LIGHT_PURPLE : TextFormatting.GOLD, TextFormatting.BOLD));
             IFormattableTextComponent status = new TranslationTextComponent("bingolobby.scoreboard.status.info", statusValue).mergeStyle(TextFormatting.WHITE);
 
             IFormattableTextComponent teamText;
@@ -159,6 +159,6 @@ public class RenderOverlay {
 
     private void renderLine(MatrixStack matrixStack, FontRenderer font, ITextComponent line, double y, int width) {
         double x = Math.max(0, ((width - (2 * padding)) / 2d) - (font.getStringPropertyWidth(line) / 2d));
-        font.func_243246_a(matrixStack, line, (float) x, (float) y, 0xFFFFFFFF);
+        font.drawTextWithShadow(matrixStack, line, (float) x, (float) y, 0xFFFFFFFF);
     }
 }

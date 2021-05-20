@@ -39,6 +39,6 @@ public class ModDimensions {
                 );
             }
         }
-        player.func_242111_a(ModDimensions.LOBBY_DIMENSION, new BlockPos(0, 65, 0), 0, true, false);
+        player.setSpawnPoint(ModDimensions.LOBBY_DIMENSION, new BlockPos(0, 65, 0), 0, true, false);
     }
 }
