@@ -15,7 +15,7 @@ dependencies {
     
     implementation fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.17.1-2.0.16")
     implementation fg.deobf("io.github.noeppi_noeppi.mods:Bongo:1.17.1-2.0.3")
-//    compileOnly fg.deobf("de.melanx.skyblockbuilder:skyblockbuilder-1.16.4:1.4.5")
+    compileOnly fg.deobf("de.melanx:SkyblockBuilder:1.17.1-2.0.15")
     
 //    compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51:api")
 //    runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51")
