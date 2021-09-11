@@ -4,20 +4,20 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 
-public class VipTeamCommand implements Command<CommandSource> {
+public class VipTeamCommand implements Command<CommandSourceStack> {
 
     @Override
-    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        PlayerEntity player = context.getSource().asPlayer();
-        Lobby lobby = Lobby.get(player.world);
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Player player = context.getSource().getPlayerOrException();
+        Lobby lobby = Lobby.get(player.level);
         DyeColor team = context.getArgument("team", DyeColor.class);
         lobby.setVipTeam(team, true);
-        context.getSource().sendFeedback(new TranslationTextComponent("bingolobby.command.vipteamadd", new TranslationTextComponent(team.getTranslationKey())), true);
+        context.getSource().sendSuccess(new TranslatableComponent("bingolobby.command.vipteamadd", new TranslatableComponent(team.getName())), true);
         return 0;
     }
 }

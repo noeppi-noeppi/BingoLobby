@@ -1,12 +1,13 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
-import io.github.noeppi_noeppi.libx.config.ConfigManager;
+import com.mojang.datafixers.DataFixerUpper;
 import io.github.noeppi_noeppi.libx.mod.registration.ModXRegistration;
+import io.github.noeppi_noeppi.libx.mod.registration.RegistrationBuilder;
 import io.github.noeppi_noeppi.mods.bingolobby.commands.LobbyCommands;
 import io.github.noeppi_noeppi.mods.bingolobby.compat.SkyblockIntegration;
-import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
 import io.github.noeppi_noeppi.mods.bingolobby.network.LobbyNetwork;
 import io.github.noeppi_noeppi.mods.bingolobby.render.RenderOverlay;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
@@ -26,12 +27,9 @@ public class BingoLobby extends ModXRegistration {
     public BingoLobby() {
         super("bingolobby", null);
 
-        ConfigManager.registerConfig(this.modid, LobbyConfig.class, false);
-
         instance = this;
         network = new LobbyNetwork(this);
 
-        this.addRegistrationHandler(ModBiomes::init);
         this.addRegistrationHandler(ModDimensions::init);
 
         MinecraftForge.EVENT_BUS.addListener(LobbyCommands::register);
@@ -49,6 +47,11 @@ public class BingoLobby extends ModXRegistration {
 
     public static LobbyNetwork getNetwork() {
         return network;
+    }
+
+    @Override
+    protected void initRegistration(RegistrationBuilder builder) {
+        builder.setVersion(1);
     }
 
     @Override

@@ -2,27 +2,23 @@ package io.github.noeppi_noeppi.mods.bingolobby.dimension;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.noeppi_noeppi.libx.annotation.codec.Codecs;
+import io.github.noeppi_noeppi.libx.annotation.codec.PrimaryConstructor;
+import io.github.noeppi_noeppi.mods.bingolobby.BingoLobby;
 import io.github.noeppi_noeppi.mods.bingolobby.ModBiomes;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryLookupCodec;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
 
 import javax.annotation.Nonnull;
 
-public class BingoLobbyBiomeProvider extends BiomeProvider {
+public class BingoLobbyBiomeProvider extends BiomeSource {
 
-    public static final Codec<BingoLobbyBiomeProvider> CODEC =
-            RecordCodecBuilder.create((instance) -> instance.group(
-                    RegistryLookupCodec.getLookUpCodec(Registry.BIOME_KEY)
-                            .forGetter(provider -> provider.biomeRegistry))
-            .apply(instance, instance.stable(BingoLobbyBiomeProvider::new)));
+    public static final Codec<BingoLobbyBiomeProvider> CODEC = Codecs.get(BingoLobby.class, BingoLobbyBiomeProvider.class);
 
-    private final Registry<Biome> biomeRegistry;
+    public final Registry<Biome> biomeRegistry;
     
+    @PrimaryConstructor
     public BingoLobbyBiomeProvider(Registry<Biome> biomeRegistry) {
         super(ImmutableList.of(ModBiomes.lobbyBiome));
         this.biomeRegistry = biomeRegistry;
@@ -30,14 +26,13 @@ public class BingoLobbyBiomeProvider extends BiomeProvider {
     
     @Nonnull
     @Override
-    protected Codec<? extends BiomeProvider> getBiomeProviderCodec() {
+    protected Codec<? extends BiomeSource> codec() {
         return CODEC;
     }
 
     @Override
     @Nonnull
-    @OnlyIn(Dist.CLIENT)
-    public BiomeProvider getBiomeProvider(long seed) {
+    public BiomeSource withSeed(long seed) {
         return new BingoLobbyBiomeProvider(this.biomeRegistry);
     }
 
@@ -45,6 +40,6 @@ public class BingoLobbyBiomeProvider extends BiomeProvider {
     @Override
     public Biome getNoiseBiome(int x, int y, int z) {
         //noinspection ConstantConditions
-        return this.biomeRegistry.getOrDefault(ModBiomes.lobbyBiome.getRegistryName());
+        return this.biomeRegistry.get(ModBiomes.lobbyBiome.getRegistryName());
     }
 }

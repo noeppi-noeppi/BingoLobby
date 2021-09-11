@@ -2,14 +2,14 @@ package io.github.noeppi_noeppi.mods.bingolobby;
 
 import io.github.noeppi_noeppi.mods.bongo.Bongo;
 import io.github.noeppi_noeppi.mods.bongo.data.Team;
-import net.minecraft.block.Block;
-import net.minecraft.block.CarpetBlock;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -17,25 +17,25 @@ public class EventListener {
 
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
-        if (!event.player.world.isRemote && event.player.ticksExisted % 2 == 1 && event.player.world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION) && event.player instanceof ServerPlayerEntity) {
-            Bongo bongo = Bongo.get(event.player.world);
+        if (!event.player.level.isClientSide && event.player.tickCount % 2 == 1 && event.player.level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && event.player instanceof ServerPlayer) {
+            Bongo bongo = Bongo.get(event.player.level);
             DyeColor color = null;
             if (!event.player.isSpectator()) {
-                Block block = event.player.world.getBlockState(event.player.getPosition()).getBlock();
-                color = block instanceof CarpetBlock ? ((CarpetBlock) block).getColor() : null;
+                Block block = event.player.level.getBlockState(event.player.blockPosition()).getBlock();
+                color = block instanceof WoolCarpetBlock ? ((WoolCarpetBlock) block).getColor() : null;
                 if (color == null) {
-                    block = event.player.world.getBlockState(event.player.getPosition().down()).getBlock();
-                    color = block instanceof CarpetBlock ? ((CarpetBlock) block).getColor() : null;
+                    block = event.player.level.getBlockState(event.player.blockPosition().below()).getBlock();
+                    color = block instanceof WoolCarpetBlock ? ((WoolCarpetBlock) block).getColor() : null;
                 }
             }
             if (bongo.active() && !bongo.running() && !bongo.won()) {
                 Team team = color == null ? null : bongo.getTeam(color);
                 if (team == null || !team.hasPlayer(event.player)) {
-                    Lobby lobby = Lobby.get(event.player.world);
-                    IFormattableTextComponent tc = lobby.canAccess(event.player, team);
+                    Lobby lobby = Lobby.get(event.player.level);
+                    MutableComponent tc = lobby.canAccess(event.player, team);
                     if (tc != null) {
-                        event.player.sendMessage(tc.mergeStyle(TextFormatting.AQUA), event.player.getUniqueID());
-                        ModDimensions.teleportToLobby((ServerPlayerEntity) event.player, false);
+                        event.player.sendMessage(tc.withStyle(ChatFormatting.AQUA), event.player.getUUID());
+                        ModDimensions.teleportToLobby((ServerPlayer) event.player, false);
                     } else {
                         if (team == null) {
                             Team currentTeam = bongo.getTeam(event.player);
@@ -48,17 +48,16 @@ public class EventListener {
                     }
                 }
             } else if (color != null) {
-                event.player.sendMessage(new TranslationTextComponent("bingolobby.nojoin.noactive").mergeStyle(TextFormatting.AQUA), event.player.getUniqueID());
-                ModDimensions.teleportToLobby((ServerPlayerEntity) event.player, false);
+                event.player.sendMessage(new TranslatableComponent("bingolobby.nojoin.noactive").withStyle(ChatFormatting.AQUA), event.player.getUUID());
+                ModDimensions.teleportToLobby((ServerPlayer) event.player, false);
             }
         }
     }
     
     @SubscribeEvent
     public void lobbyTick(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && event.world instanceof ServerWorld) {
-            ServerWorld world = (ServerWorld) event.world;
-            if (world.getServer().getTickCounter() % 20 == 0 && ModDimensions.LOBBY_DIMENSION.equals(world.getDimensionKey())) {
+        if (event.phase == TickEvent.Phase.START && event.world instanceof ServerLevel level) {
+            if (level.getServer().getTickCount() % 20 == 0 && ModDimensions.LOBBY_DIMENSION.equals(level.dimension())) {
                 Lobby lobby = Lobby.get(event.world);
                 lobby.tickCountdown();
             }

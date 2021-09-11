@@ -1,84 +1,83 @@
 package io.github.noeppi_noeppi.mods.bingolobby.dimension;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.noeppi_noeppi.libx.annotation.codec.Codecs;
+import io.github.noeppi_noeppi.libx.annotation.codec.PrimaryConstructor;
+import io.github.noeppi_noeppi.mods.bingolobby.BingoLobby;
 import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.Blockreader;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.biome.BiomeManager;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.WorldGenRegion;
-import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.StructureSettings;
 
 import javax.annotation.Nonnull;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 public class BingoLobbyGenerator extends ChunkGenerator {
 
-    public static final Codec<BingoLobbyGenerator> CODEC = RecordCodecBuilder.create(
-            (instance) -> instance.group(
-                    BiomeProvider.CODEC.fieldOf("biome_source").forGetter(s -> s.biomeProvider)
-            ).apply(instance, instance.stable(BingoLobbyGenerator::new)));
+    public static final Codec<BingoLobbyGenerator> CODEC = Codecs.get(BingoLobby.class, BingoLobbyGenerator.class);
 
-    private final BiomeProvider biomeProvider;
+    public final BiomeSource biomeSource;
 
-    private BingoLobbyGenerator(BiomeProvider biomeSource) {
-        super(biomeSource, biomeSource, new DimensionStructuresSettings(false), 0);
-        this.biomeProvider = biomeSource;
+    @PrimaryConstructor
+    public BingoLobbyGenerator(BiomeSource biomeSource) {
+        super(biomeSource, biomeSource, new StructureSettings(false), 0);
+        this.biomeSource = biomeSource;
     }
 
     @Nonnull
     @Override
-    protected Codec<? extends ChunkGenerator> getChunkGeneratorCodec() {
+    protected Codec<? extends ChunkGenerator> codec() {
         return CODEC;
     }
 
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public ChunkGenerator createForSeed(long seed) {
-        return new BingoLobbyGenerator(this.biomeProvider);
+    public ChunkGenerator withSeed(long seed) {
+        return new BingoLobbyGenerator(this.biomeSource);
     }
 
     @Override
-    public void generateSurface(@Nonnull WorldGenRegion region, @Nonnull IChunk chunk) {
+    public void buildSurfaceAndBedrock(@Nonnull WorldGenRegion level, @Nonnull ChunkAccess chunk) {
         ChunkPos cp = chunk.getPos();
-        int xs = cp.getXStart();
-        int zs = cp.getZStart();
-        int xe = cp.getXEnd();
-        int ze = cp.getZEnd();
+        int xs = cp.getMinBlockX();
+        int zs = cp.getMinBlockZ();
+        int xe = cp.getMaxBlockX();
+        int ze = cp.getMaxBlockZ();
         if (LobbyConfig.is_void) {
             if (xs <= 0 && xe >= 0 &&zs <= 0 &&ze >= 0) {
-                chunk.setBlockState(new BlockPos(0, 64, 0), Blocks.DIAMOND_BLOCK.getDefaultState(), false);
+                chunk.setBlockState(new BlockPos(0, 64, 0), Blocks.DIAMOND_BLOCK.defaultBlockState(), false);
             }
         } else {
-            BlockPos.Mutable pos = new BlockPos.Mutable();
-            BlockState bedrock = Blocks.BEDROCK.getDefaultState();
-            BlockState stone = Blocks.STONE.getDefaultState();
-            BlockState dirt = Blocks.DIRT.getDefaultState();
-            BlockState grass = Blocks.GRASS_BLOCK.getDefaultState();
-            BlockState diamond = Blocks.DIAMOND_BLOCK.getDefaultState();
-            BlockState air = Blocks.AIR.getDefaultState();
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+            BlockState bedrock = Blocks.BEDROCK.defaultBlockState();
+            BlockState stone = Blocks.STONE.defaultBlockState();
+            BlockState dirt = Blocks.DIRT.defaultBlockState();
+            BlockState grass = Blocks.GRASS_BLOCK.defaultBlockState();
+            BlockState diamond = Blocks.DIAMOND_BLOCK.defaultBlockState();
+            BlockState air = Blocks.AIR.defaultBlockState();
             for (int x = xs; x <= xe; x++) {
                 for (int z = zs; z <= ze; z++) {
                     pos.setX(x);
                     pos.setZ(z);
 
-                    pos.setY(0);
+                    
+                    pos.setY(chunk.getMinBuildHeight());
                     chunk.setBlockState(pos, bedrock, false);
 
-                    for (int y = 1; y <= 58; y++) {
+                    for (int y = chunk.getMinBuildHeight() + 1; y <= 58; y++) {
                         pos.setY(y);
                         chunk.setBlockState(pos, stone, false);
                     }
@@ -91,7 +90,7 @@ public class BingoLobbyGenerator extends ChunkGenerator {
                     pos.setY(64);
                     chunk.setBlockState(pos, x == 0 && z == 0 ? diamond : grass, false);
 
-                    for (int y = 65; y < chunk.getHeight(); y++) {
+                    for (int y = 65; y < chunk.getMaxBuildHeight(); y++) {
                         pos.setY(y);
                         chunk.setBlockState(pos, air, false);
                     }
@@ -100,29 +99,30 @@ public class BingoLobbyGenerator extends ChunkGenerator {
         }
     }
 
+    @Nonnull
     @Override
-    public void generateStructures(@Nonnull IWorld world, @Nonnull StructureManager structures, @Nonnull IChunk chunk) {
-        //
+    public CompletableFuture<ChunkAccess> fillFromNoise(@Nonnull Executor executor, @Nonnull StructureFeatureManager structures, @Nonnull ChunkAccess chunk) {
+        return CompletableFuture.completedFuture(chunk);
     }
 
     @Override
-    public int getHeight(int x, int z, @Nonnull Heightmap.Type heightmapType) {
-        return 1;
+    public int getBaseHeight(int x, int z, @Nonnull Heightmap.Types heightmap, @Nonnull LevelHeightAccessor level) {
+        return 64;
     }
 
     @Nonnull
     @Override
-    public IBlockReader func_230348_a_(int p_230348_1_, int p_230348_2_) {
-        return new Blockreader(new BlockState[0]);
+    public NoiseColumn getBaseColumn(int i, int i1, @Nonnull LevelHeightAccessor levelHeightAccessor) {
+        return new NoiseColumn(0, new BlockState[]{});
     }
 
     @Override
-    public void generateCarvings(long seed, @Nonnull BiomeManager biomes, @Nonnull IChunk chunk, @Nonnull GenerationStage.Carving stage) {
+    public void applyCarvers(long seed, @Nonnull BiomeManager biomeManager, @Nonnull ChunkAccess chunk, @Nonnull GenerationStep.Carving carving) {
         //
     }
 
     @Override
-    public void generateFeatures(@Nonnull WorldGenRegion region, @Nonnull StructureManager structures) {
+    public void applyBiomeDecoration(@Nonnull WorldGenRegion region, @Nonnull StructureFeatureManager structureManager) {
         //
     }
 }

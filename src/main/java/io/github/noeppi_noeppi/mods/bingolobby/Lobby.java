@@ -4,16 +4,20 @@ import io.github.noeppi_noeppi.libx.util.ServerMessages;
 import io.github.noeppi_noeppi.mods.bongo.Bongo;
 import io.github.noeppi_noeppi.mods.bongo.data.Team;
 import io.github.noeppi_noeppi.mods.bongo.network.BongoMessageType;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.text.*;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.DimensionSavedDataManager;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -24,18 +28,18 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class Lobby extends WorldSavedData {
+public class Lobby extends SavedData {
     
     public static final String ID = BingoLobby.getInstance().modid;
 
     private static Lobby clientInstance;
     private static Minecraft mc = null;
     
-    public static Lobby get(World world) {
-        if (!world.isRemote) {
-            DimensionSavedDataManager storage = ((ServerWorld) world).getServer().getOverworld().getSavedData();
-            Lobby lobby = storage.getOrCreate(Lobby::new, ID);
-            lobby.world = (ServerWorld) world;
+    public static Lobby get(Level level) {
+        if (!level.isClientSide) {
+            DimensionDataStorage storage = ((ServerLevel) level).getServer().overworld().getDataStorage();
+            Lobby lobby = storage.computeIfAbsent(Lobby::new, Lobby::new, ID);
+            lobby.level = (ServerLevel) level;
             return lobby;
         } else {
             return clientInstance == null ? new Lobby() : clientInstance;
@@ -49,27 +53,26 @@ public class Lobby extends WorldSavedData {
         }
     }
 
-    private ServerWorld world;
+    private ServerLevel level;
     private final Set<UUID> vips;
     private final Set<DyeColor> vipTeams;
     private int maxPlayers;
     private int countdown;
-    
-    public Lobby() {
-        this(ID);
-    }
 
-    public Lobby(String name) {
-        super(name);
+    public Lobby() {
         this.vips = new HashSet<>();
-        this.vips.add(UUID.fromString("3358ddae-3a41-4ba0-bdfa-ee54b6c55cf5"));
         this.vipTeams = new HashSet<>();
         this.vipTeams.add(DyeColor.YELLOW);
         this.maxPlayers = -1;
         this.countdown = -1;
     }
+    
+    public Lobby(CompoundTag nbt) {
+        this();
+        this.load(nbt);
+    }
 
-    public boolean vip(PlayerEntity player) {
+    public boolean vip(Player player) {
         return this.vip(player.getGameProfile().getId());
     }
     
@@ -77,7 +80,7 @@ public class Lobby extends WorldSavedData {
         return this.vips.contains(uid);
     }
     
-    public void setVip(PlayerEntity player, boolean setVip) {
+    public void setVip(Player player, boolean setVip) {
         this.setVip(player.getGameProfile().getId(), setVip);
     }
     
@@ -87,7 +90,7 @@ public class Lobby extends WorldSavedData {
         } else {
             this.vips.remove(uid);
         }
-        this.markDirty();
+        this.setDirty();
     }
     
     public boolean vipTeam(DyeColor team) {
@@ -100,53 +103,52 @@ public class Lobby extends WorldSavedData {
         } else {
             this.vipTeams.remove(team);
         }
-        this.markDirty();
+        this.setDirty();
     }
 
     public void setMaxPlayers(int maxPlayers) {
         this.maxPlayers = maxPlayers;
-        this.markDirty();
+        this.setDirty();
     }
 
     @Nullable
-    public IFormattableTextComponent canAccess(PlayerEntity player, @Nullable Team team) {
+    public MutableComponent canAccess(Player player, @Nullable Team team) {
         if (team == null) {
             return null;
         } else if (this.vipTeam(team.color) && !this.vip(player)) {
-            return new TranslationTextComponent("bingolobby.nojoin.novip");
+            return new TranslatableComponent("bingolobby.nojoin.novip");
         } else if (this.maxPlayers >= 0 && team.getPlayers().size() >= this.maxPlayers) {
-            return new TranslationTextComponent("bingolobby.nojoin.full");
+            return new TranslatableComponent("bingolobby.nojoin.full");
         }
         return null;
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-        ListNBT vipList = new ListNBT();
+    public CompoundTag save(@Nonnull CompoundTag compound) {
+        ListTag vipList = new ListTag();
         for (UUID uid : this.vips) {
-            CompoundNBT entry = new CompoundNBT();
-            entry.putUniqueId("player", uid);
+            CompoundTag entry = new CompoundTag();
+            entry.putUUID("player", uid);
             vipList.add(entry);
         }
-        nbt.put("vips", vipList);
+        compound.put("vips", vipList);
         
-        nbt.putIntArray("vipTeams", this.vipTeams.stream().mapToInt(DyeColor::getId).toArray());
+        compound.putIntArray("vipTeams", this.vipTeams.stream().mapToInt(DyeColor::getId).toArray());
         
-        nbt.putInt("maxPlayers", this.maxPlayers);
-        nbt.putInt("countdown", this.countdown);
+        compound.putInt("maxPlayers", this.maxPlayers);
+        compound.putInt("countdown", this.countdown);
         
-        return nbt;
+        return compound;
     }
 
-    @Override
-    public void read(@Nonnull CompoundNBT nbt) {
+    public void load(@Nonnull CompoundTag nbt) {
         this.vips.clear();
         if (nbt.contains("vips", Constants.NBT.TAG_LIST)) {
-            ListNBT vipList = nbt.getList("vips", Constants.NBT.TAG_COMPOUND);
+            ListTag vipList = nbt.getList("vips", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < vipList.size(); i++) {
-                CompoundNBT entry = vipList.getCompound(i);
-                this.vips.add(entry.getUniqueId("player"));
+                CompoundTag entry = vipList.getCompound(i);
+                this.vips.add(entry.getUUID("player"));
             }
         }
         
@@ -165,8 +167,8 @@ public class Lobby extends WorldSavedData {
     }
     
     public void tickCountdown() {
-        if (this.world != null) {
-            Bongo bongo = Bongo.get(this.world);
+        if (this.level != null) {
+            Bongo bongo = Bongo.get(this.level);
             boolean dirty = false;
             if (!bongo.active() || bongo.running() || bongo.won()) {
                 this.countdown = -1;
@@ -175,15 +177,15 @@ public class Lobby extends WorldSavedData {
             if (this.countdown > 0) {
                 this.countdown -= 1;
                 if ((this.countdown <= 10 && this.countdown >= 1) || this.countdown < 60 && this.countdown > 10 && this.countdown % 10 == 0) {
-                    ServerMessages.broadcast(this.world,
-                            new TranslationTextComponent("bingolobby.countdown.seconds",
-                                    new StringTextComponent(Integer.toString(this.countdown)).mergeStyle(Style.EMPTY.mergeWithFormatting(TextFormatting.DARK_PURPLE, TextFormatting.BOLD))
-                            ).mergeStyle(TextFormatting.DARK_AQUA));
+                    ServerMessages.broadcast(this.level,
+                            new TranslatableComponent("bingolobby.countdown.seconds",
+                                    new TextComponent(Integer.toString(this.countdown)).withStyle(Style.EMPTY.applyFormats(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD))
+                            ).withStyle(ChatFormatting.DARK_AQUA));
                 } else if (this.countdown >= 60 && this.countdown % 60 == 0) {
-                    ServerMessages.broadcast(this.world,
-                            new TranslationTextComponent("bingolobby.countdown.minutes",
-                                    new StringTextComponent(Integer.toString(this.countdown / 60)).mergeStyle(Style.EMPTY.mergeWithFormatting(TextFormatting.DARK_PURPLE, TextFormatting.BOLD))
-                            ).mergeStyle(TextFormatting.DARK_AQUA)
+                    ServerMessages.broadcast(this.level,
+                            new TranslatableComponent("bingolobby.countdown.minutes",
+                                    new TextComponent(Integer.toString(this.countdown / 60)).withStyle(Style.EMPTY.applyFormats(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD))
+                            ).withStyle(ChatFormatting.DARK_AQUA)
                     );
                 } else if (this.countdown == 0) {
                     this.countdown = -1;
@@ -192,7 +194,7 @@ public class Lobby extends WorldSavedData {
                 dirty = true;
             }
             if (dirty) {
-                this.markDirty();
+                this.setDirty();
             }
         }
     }
@@ -206,14 +208,14 @@ public class Lobby extends WorldSavedData {
     }
     
     @Override
-    public void markDirty() {
-        this.markDirty(false);
+    public void setDirty() {
+        this.setChanged(false);
     }
     
-    public void markDirty(boolean suppressLobbySync) {
-        super.markDirty();
-        if (this.world != null && !suppressLobbySync) {
-            BingoLobby.getNetwork().updateLobby(this.world);
+    public void setChanged(boolean suppressLobbySync) {
+        super.setDirty();
+        if (this.level != null && !suppressLobbySync) {
+            BingoLobby.getNetwork().updateLobby(this.level);
         }
     }
 }

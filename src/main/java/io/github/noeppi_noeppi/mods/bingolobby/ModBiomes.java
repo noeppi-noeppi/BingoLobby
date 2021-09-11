@@ -1,39 +1,36 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeAmbience;
-import net.minecraft.world.biome.BiomeGenerationSettings;
-import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilders;
+import io.github.noeppi_noeppi.libx.annotation.registration.RegisterClass;
+import net.minecraft.data.worldgen.SurfaceBuilders;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraftforge.common.world.MobSpawnInfoBuilder;
 
-import static net.minecraft.world.biome.BiomeMaker.getSkyColorWithTemperatureModifier;
+import static net.minecraft.data.worldgen.biome.VanillaBiomes.calculateSkyColor;
 
-
+@RegisterClass
 public class ModBiomes {
 
-    public static final Biome lobbyBiome = new Biome.Builder()
+    public static final Biome lobbyBiome = new Biome.BiomeBuilder()
             .scale(0.1f)
             .temperature(0.9f)
-            .category(Biome.Category.NONE)
+            .biomeCategory(Biome.BiomeCategory.NONE)
             .depth(0.2f)
-            .precipitation(Biome.RainType.NONE)
+            .precipitation(Biome.Precipitation.NONE)
             .downfall(1)
-            .withMobSpawnSettings(new MobSpawnInfoBuilder(MobSpawnInfo.EMPTY).build())
-            .setEffects(
-                    new BiomeAmbience.Builder()
-                            .setWaterColor(0x43d5ee)
-                            .setWaterFogColor(0x041f33)
-                            .setFogColor(0xc0d8ff)
-                            .withSkyColor(getSkyColorWithTemperatureModifier(0.9f))
+            .mobSpawnSettings(new MobSpawnInfoBuilder(MobSpawnSettings.EMPTY).build())
+            .specialEffects(
+                    new BiomeSpecialEffects.Builder()
+                            .waterColor(0x43d5ee)
+                            .waterFogColor(0x041f33)
+                            .fogColor(0xc0d8ff)
+                            .skyColor(calculateSkyColor(0.9f))
                             .build()
-            ).withGenerationSettings(
+            ).generationSettings(
                     new BiomeGenerationSettings.Builder()
-                            .withSurfaceBuilder(ConfiguredSurfaceBuilders.NOPE)
+                            .surfaceBuilder(SurfaceBuilders.NOPE)
                             .build()
             ).build();
-    
-    public static void init() {
-        BingoLobby.getInstance().register("lobby", lobbyBiome);
-    }
 }

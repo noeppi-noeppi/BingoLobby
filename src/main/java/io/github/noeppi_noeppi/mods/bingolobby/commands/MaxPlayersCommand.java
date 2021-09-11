@@ -4,25 +4,25 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
 
-public class MaxPlayersCommand implements Command<CommandSource> {
+public class MaxPlayersCommand implements Command<CommandSourceStack> {
 
     @Override
-    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        PlayerEntity player = context.getSource().asPlayer();
-        Lobby lobby = Lobby.get(player.world);
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Player player = context.getSource().getPlayerOrException();
+        Lobby lobby = Lobby.get(player.level);
         int maxPlayers = context.getArgument("maxPlayers", Integer.class);
         if (maxPlayers < 0) {
             maxPlayers = -1;
         }
         lobby.setMaxPlayers(maxPlayers);
         if (maxPlayers < 0) {
-            context.getSource().sendFeedback(new TranslationTextComponent("bingolobby.command.maxplayers.unlimited"), true);
+            context.getSource().sendSuccess(new TranslatableComponent("bingolobby.command.maxplayers.unlimited"), true);
         } else {
-            context.getSource().sendFeedback(new TranslationTextComponent("bingolobby.command.maxplayers.limited", Integer.toString(maxPlayers)), true);
+            context.getSource().sendSuccess(new TranslatableComponent("bingolobby.command.maxplayers.limited", Integer.toString(maxPlayers)), true);
         }
         return 0;
     }

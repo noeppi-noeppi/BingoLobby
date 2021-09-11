@@ -1,10 +1,10 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
 import io.github.noeppi_noeppi.libx.event.RandomTickEvent;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -20,7 +20,7 @@ public class LobbyEvents {
 
     @SubscribeEvent
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getPlayer().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION) && !event.getPlayer().hasPermissionLevel(2)) {
+        if (event.getPlayer().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !event.getPlayer().hasPermissions(2)) {
             if (event.isCancelable()) {
                 event.setCanceled(true);
             }
@@ -31,8 +31,8 @@ public class LobbyEvents {
     public void mobGrief(EntityMobGriefingEvent event) {
         try {
             //noinspection ConstantConditions
-            if (event.getEntity() != null && event.getEntity().world != null && event.getEntity().world.getDimensionKey() != null) {
-                if (event.getEntity().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+            if (event.getEntity() != null && event.getEntity().level != null && event.getEntity().level.dimension() != null) {
+                if (event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
                     event.setResult(Event.Result.DENY);
                 }
             }
@@ -43,22 +43,22 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void explode(ExplosionEvent.Start event) {
-        if (event.getWorld().getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (event.getWorld().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void blockBreak(BlockEvent.BreakEvent event) {
-        if (event.getPlayer().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION) && !event.getPlayer().hasPermissionLevel(2)) {
+        if (event.getPlayer().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !event.getPlayer().hasPermissions(2)) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void blockPlace(BlockEvent.EntityPlaceEvent event) {
-        if (event.getWorld() instanceof World && ((World) event.getWorld()).getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
-            if (!(event.getEntity() instanceof PlayerEntity) || !event.getEntity().hasPermissionLevel(2)) {
+        if (event.getWorld() instanceof Level && ((Level) event.getWorld()).dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+            if (!(event.getEntity() instanceof Player) || !event.getEntity().hasPermissions(2)) {
                 event.setCanceled(true);
             }
         }
@@ -66,8 +66,8 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void blockMultiPlace(BlockEvent.EntityMultiPlaceEvent event) {
-        if (event.getWorld() instanceof World && ((World) event.getWorld()).getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
-            if (!(event.getEntity() instanceof PlayerEntity) || !event.getEntity().hasPermissionLevel(2)) {
+        if (event.getWorld() instanceof Level && ((Level) event.getWorld()).dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+            if (!(event.getEntity() instanceof Player) || !event.getEntity().hasPermissions(2)) {
                 event.setCanceled(true);
             }
         }
@@ -75,43 +75,43 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void farmlandTrample(BlockEvent.FarmlandTrampleEvent event) {
-        if (event.getEntity().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void cropGrow(BlockEvent.CropGrowEvent.Pre event) {
-        if (event.getWorld() instanceof World && ((World) event.getWorld()).getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (event.getWorld() instanceof Level && ((Level) event.getWorld()).dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.setResult(Event.Result.DENY);
         }
     }
     
     @SubscribeEvent
     public void cropGrow(BlockEvent.BlockToolInteractEvent event) {
-        if (event.getPlayer().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION) && !event.getPlayer().hasPermissionLevel(2)) {
+        if (event.getPlayer().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !event.getPlayer().hasPermissions(2)) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void mobSpawnAttempt(LivingSpawnEvent.CheckSpawn event) {
-        World world;
-        if (event.getWorld() instanceof World) world = (World) event.getWorld();
-        else world = event.getEntity().world;
-        if (world != null && world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION) && !(event.getEntity() instanceof PlayerEntity)) {
+        Level level;
+        if (event.getWorld() instanceof Level) level = (Level) event.getWorld();
+        else level = event.getEntity().level;
+        if (level != null && level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !(event.getEntity() instanceof Player)) {
             event.setResult(Event.Result.DENY);
         }
     }
     
     @SubscribeEvent
     public void mobSpawn(LivingSpawnEvent.SpecialSpawn event) {
-        World world;
-        if (event.getWorld() instanceof World) world = (World) event.getWorld();
-        else world = event.getEntity().world;
-        if (world != null && world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION) && !(event.getEntity() instanceof PlayerEntity)) {
-            if (event.getSpawnReason() != SpawnReason.SPAWN_EGG && event.getSpawnReason() != SpawnReason.BUCKET
-                    && event.getSpawnReason() != SpawnReason.MOB_SUMMONED && event.getSpawnReason() != SpawnReason.COMMAND) {
+        Level level;
+        if (event.getWorld() instanceof Level) level = (Level) event.getWorld();
+        else level = event.getEntity().level;
+        if (level != null && level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !(event.getEntity() instanceof Player)) {
+            if (event.getSpawnReason() != MobSpawnType.SPAWN_EGG && event.getSpawnReason() != MobSpawnType.BUCKET
+                    && event.getSpawnReason() != MobSpawnType.MOB_SUMMONED && event.getSpawnReason() != MobSpawnType.COMMAND) {
                 if (event.isCancelable()) {
                     event.setCanceled(true);
                 }
@@ -121,41 +121,41 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void livingAttack(LivingAttackEvent event) {
-        if (!event.getSource().canHarmInCreative() && event.getEntity().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION) && (!(event.getSource().getTrueSource() instanceof PlayerEntity) || !event.getSource().getTrueSource().hasPermissionLevel(2))) {
+        if (!event.getSource().isBypassInvul() && event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (!(event.getSource().getEntity() instanceof Player) || !event.getSource().getEntity().hasPermissions(2))) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void livingHurt(LivingHurtEvent event) {
-        if (!event.getSource().canHarmInCreative() && event.getEntity().world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION) && (event.getEntity() instanceof PlayerEntity || !(event.getSource().getTrueSource() instanceof PlayerEntity) || !event.getSource().getTrueSource().hasPermissionLevel(2))) {
+        if (!event.getSource().isBypassInvul() && event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (event.getEntity() instanceof Player || !(event.getSource().getEntity() instanceof Player) || !event.getSource().getEntity().hasPermissions(2))) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
-        if (!event.player.getEntityWorld().isRemote && !event.player.getShouldBeDead() && event.player.ticksExisted % 20 == 0 && event.player.world.getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (!event.player.getCommandSenderWorld().isClientSide && !event.player.isDeadOrDying() && event.player.tickCount % 20 == 0 && event.player.level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.player.setHealth(20);
-            event.player.getFoodStats().setFoodLevel(20);
-            event.player.setAir(event.player.getMaxAir());
-            event.player.forceFireTicks(0);
-            if (event.player.getPosY() < -3 && event.player instanceof ServerPlayerEntity) {
-                ModDimensions.teleportToLobby((ServerPlayerEntity) event.player, false);
+            event.player.getFoodData().setFoodLevel(20);
+            event.player.setAirSupply(event.player.getMaxAirSupply());
+            event.player.setRemainingFireTicks(0);
+            if (event.player.getY() < -3 && event.player instanceof ServerPlayer) {
+                ModDimensions.teleportToLobby((ServerPlayer) event.player, false);
             }
         }
     }
     
     @SubscribeEvent
     public void randomTickBlock(RandomTickEvent.Block event) {
-        if (event.getWorld().getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (event.getLevel().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void randomTickFluid(RandomTickEvent.Fluid event) {
-        if (event.getWorld().getDimensionKey().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (event.getLevel().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.setCanceled(true);
         }
     }

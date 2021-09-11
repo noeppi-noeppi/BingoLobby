@@ -4,24 +4,24 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.arguments.EntitySelector;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.selector.EntitySelector;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
-public class UnvipCommand implements Command<CommandSource> {
+public class UnvipCommand implements Command<CommandSourceStack> {
 
     @Override
-    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        PlayerEntity player = context.getSource().asPlayer();
-        Lobby lobby = Lobby.get(player.world);
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Player player = context.getSource().getPlayerOrException();
+        Lobby lobby = Lobby.get(player.level);
         EntitySelector vipSelector = context.getArgument("players", EntitySelector.class);
-        List<ServerPlayerEntity> players = vipSelector.selectPlayers(context.getSource());
+        List<ServerPlayer> players = vipSelector.findPlayers(context.getSource());
         players.forEach(p -> lobby.setVip(p, false));
-        context.getSource().sendFeedback(new TranslationTextComponent("bingolobby.command.vipremove", Integer.toString(players.size())), true);
+        context.getSource().sendSuccess(new TranslatableComponent("bingolobby.command.vipremove", Integer.toString(players.size())), true);
 
         return 0;
     }

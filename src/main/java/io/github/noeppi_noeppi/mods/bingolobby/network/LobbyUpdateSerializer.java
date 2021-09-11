@@ -3,8 +3,8 @@ package io.github.noeppi_noeppi.mods.bingolobby.network;
 import io.github.noeppi_noeppi.libx.network.PacketSerializer;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
 import io.github.noeppi_noeppi.mods.bongo.network.BongoMessageType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.Objects;
 
@@ -16,16 +16,16 @@ public class LobbyUpdateSerializer implements PacketSerializer<LobbyUpdateSerial
     }
 
     @Override
-    public void encode(LobbyUpdateMessage msg, PacketBuffer buffer) {
-        buffer.writeCompoundTag(msg.lobby.write(new CompoundNBT()));
-        buffer.writeString(msg.bongoMessageType.name());
+    public void encode(LobbyUpdateMessage msg, FriendlyByteBuf buffer) {
+        buffer.writeNbt(msg.lobby.save(new CompoundTag()));
+        buffer.writeUtf(msg.bongoMessageType.name());
     }
 
     @Override
-    public LobbyUpdateMessage decode(PacketBuffer buffer) {
+    public LobbyUpdateMessage decode(FriendlyByteBuf buffer) {
         Lobby lobby = new Lobby();
-        lobby.read(Objects.requireNonNull(buffer.readCompoundTag()));
-        return new LobbyUpdateMessage(lobby, BongoMessageType.valueOf(buffer.readString(32767)));
+        lobby.load(Objects.requireNonNull(buffer.readNbt()));
+        return new LobbyUpdateMessage(lobby, BongoMessageType.valueOf(buffer.readUtf(32767)));
     }
 
     public static class LobbyUpdateMessage {
