@@ -19,7 +19,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import javax.annotation.Nonnull;
 
 @Mod("bingolobby")
-public class BingoLobby extends ModXRegistration {
+public final class BingoLobby extends ModXRegistration {
     
     private static BingoLobby instance;
     private static LobbyNetwork network;
