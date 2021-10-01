@@ -11,9 +11,9 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.17.1-2.0.16")
+    annotationProcessor fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.17.1-2.1.2")
     
-    implementation fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.17.1-2.0.16")
+    implementation fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.17.1-2.1.2")
     implementation fg.deobf("io.github.noeppi_noeppi.mods:Bongo:1.17.1-2.0.3")
     compileOnly fg.deobf("de.melanx:SkyblockBuilder:1.17.1-2.0.15")
     

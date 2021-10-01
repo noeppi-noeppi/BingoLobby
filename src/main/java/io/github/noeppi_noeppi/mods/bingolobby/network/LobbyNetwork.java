@@ -22,31 +22,31 @@ public class LobbyNetwork extends NetworkX {
     }
 
     @Override
-    protected String getProtocolVersion() {
-        return "2";
+    protected Protocol getProtocol() {
+        return Protocol.of("2");
     }
 
     public void updateLobby(Level level) {
         if (!level.isClientSide) {
-            this.instance.send(PacketDistributor.ALL.noArg(), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(level)));
+            this.channel.send(PacketDistributor.ALL.noArg(), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(level)));
         }
     }
 
     public void updateLobby(Player player) {
         if (!player.getCommandSenderWorld().isClientSide) {
-            this.instance.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(player.getCommandSenderWorld())));
+            this.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(player.getCommandSenderWorld())));
         }
     }
 
     public void updateLobby(Level level, BongoMessageType messageType) {
         if (!level.isClientSide) {
-            this.instance.send(PacketDistributor.ALL.noArg(), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(level), messageType));
+            this.channel.send(PacketDistributor.ALL.noArg(), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(level), messageType));
         }
     }
 
     public void updateLobby(Player player, BongoMessageType messageType) {
         if (!player.getCommandSenderWorld().isClientSide) {
-            this.instance.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(player.getCommandSenderWorld()), messageType));
+            this.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(player.getCommandSenderWorld()), messageType));
         }
     }
 }
