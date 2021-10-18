@@ -8,6 +8,7 @@ modId="bingolobby"
 version="${file.jarVersion}"
 displayName="BingoLobby"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/bingolobby"
+updateJSONURL="https://assets.melanx.de/updates/bingolobby.json"
 authors="noeppi_noeppi"
 description='''
 A lobby for the Bongo mod.
