@@ -15,12 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.zip.ZipFile;
 
 public class EventListener {
 
@@ -74,28 +69,8 @@ public class EventListener {
     }
 
     @SubscribeEvent
-    public void copyWorldPreset(FMLServerAboutToStartEvent event) throws IOException {
+    public void preServerStart(FMLServerAboutToStartEvent event) {
         Path dimensionFolder = FMLPaths.GAMEDIR.get().resolve(event.getServer().storageSource.getDimensionPath(ModDimensions.LOBBY_DIMENSION).toPath()).normalize();
-        if (!Files.exists(dimensionFolder)) {
-            Path zipPath = FMLPaths.CONFIGDIR.get().resolve("bingolobby-preset.zip");
-            if (Files.exists(zipPath)) {
-                ZipFile zipFile = new ZipFile(zipPath.toFile());
-                zipFile.entries().asIterator().forEachRemaining(entry -> {
-                    try {
-                        File destFile = new File(dimensionFolder.toFile(), entry.getName());
-                        if (entry.isDirectory()) {
-                            //noinspection ResultOfMethodCallIgnored
-                            destFile.mkdirs();
-                        } else {
-                            FileOutputStream outputStream = new FileOutputStream(destFile);
-                            zipFile.getInputStream(entry).transferTo(outputStream);
-                            outputStream.close();
-                        }
-                    } catch (IOException e) {
-                        BingoLobby.getInstance().logger.warn("Failed to copy preset file.", e);
-                    }
-                });
-            }
-        }
+        WorldPresetManager.copyWorld(dimensionFolder);
     }
 }
