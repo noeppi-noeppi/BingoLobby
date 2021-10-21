@@ -12,6 +12,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
+
+import java.nio.file.Path;
 
 public class EventListener {
 
@@ -53,7 +57,7 @@ public class EventListener {
             }
         }
     }
-    
+
     @SubscribeEvent
     public void lobbyTick(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.START && event.world instanceof ServerLevel level) {
@@ -62,5 +66,11 @@ public class EventListener {
                 lobby.tickCountdown();
             }
         }
+    }
+
+    @SubscribeEvent
+    public void preServerStart(FMLServerAboutToStartEvent event) {
+        Path dimensionFolder = FMLPaths.GAMEDIR.get().resolve(event.getServer().storageSource.getDimensionPath(ModDimensions.LOBBY_DIMENSION).toPath()).normalize();
+        WorldPresetManager.copyWorld(dimensionFolder);
     }
 }
