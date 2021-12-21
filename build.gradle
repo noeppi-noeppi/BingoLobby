@@ -1,22 +1,21 @@
 buildscript {
-    apply from: 'https://raw.githubusercontent.com/noeppi-noeppi/ModUtils/v2/buildscript.gradle', to: buildscript
+    apply from: 'https://noeppi-noeppi.github.io/ModUtils/v3/buildscript.gradle', to: buildscript
 }
 
-apply from: 'https://raw.githubusercontent.com/noeppi-noeppi/ModUtils/v2/mod.gradle'
+apply from: 'https://noeppi-noeppi.github.io/ModUtils/v3/mod.gradle'
 
 repositories {
-    maven { url = 'https://dvs1.progwml6.com/files/maven/' }
-    maven { url = 'https://modmaven.k-4u.nl' }
-    maven { url = 'https://maven.melanx.de/' }
+    maven { url = "https://dvs1.progwml6.com/files/maven/" }
+    maven { url = "https://maven.melanx.de/" }
 }
 
 dependencies {
-    annotationProcessor fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.17.1-2.1.9")
-    
-    implementation fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.17.1-2.1.9")
-    implementation fg.deobf("io.github.noeppi_noeppi.mods:Bongo:1.17.1-2.0.8")
-    compileOnly fg.deobf("de.melanx:SkyblockBuilder:1.17.1-2.0.22")
-    
-//    compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51:api")
-//    runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51")
+    annotationProcessor fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.18.1-3.1.0")
+
+    implementation fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.18.1-3.1.0")
+    implementation fg.deobf("io.github.noeppi_noeppi.mods:Bongo:1.18.1-2.1.0")
+    compileOnly fg.deobf("de.melanx:SkyblockBuilder:1.18.1-3.0.3")
+
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.1:9.1.1.48")
+    runtimeOnly fg.deobf("de.melanx:JustEnoughAdvancements:1.18.1-3.1.0")
 }

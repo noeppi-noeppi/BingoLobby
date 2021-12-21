@@ -25,8 +25,6 @@ public final class BingoLobby extends ModXRegistration {
     private static LobbyNetwork network;
     
     public BingoLobby() {
-        super("bingolobby", null);
-
         instance = this;
         network = new LobbyNetwork(this);
 

@@ -1,7 +1,7 @@
 package io.github.noeppi_noeppi.mods.bingolobby.network;
 
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

@@ -1,7 +1,7 @@
 package io.github.noeppi_noeppi.mods.bingolobby.dimension;
 
 import com.mojang.serialization.Codec;
-import io.github.noeppi_noeppi.libx.annotation.codec.Codecs;
+import io.github.noeppi_noeppi.libx.annotation.api.Codecs;
 import io.github.noeppi_noeppi.libx.annotation.codec.PrimaryConstructor;
 import io.github.noeppi_noeppi.mods.bingolobby.BingoLobby;
 import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
@@ -13,6 +13,7 @@ import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.StructureSettings;
+import net.minecraft.world.level.levelgen.blending.Blender;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
@@ -50,7 +52,7 @@ public class BingoLobbyGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void buildSurfaceAndBedrock(@Nonnull WorldGenRegion level, @Nonnull ChunkAccess chunk) {
+    public void buildSurface(@Nonnull WorldGenRegion level, @Nonnull StructureFeatureManager structures, @Nonnull ChunkAccess chunk) {
         ChunkPos cp = chunk.getPos();
         int xs = cp.getMinBlockX();
         int zs = cp.getMinBlockZ();
@@ -101,7 +103,7 @@ public class BingoLobbyGenerator extends ChunkGenerator {
 
     @Nonnull
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(@Nonnull Executor executor, @Nonnull StructureFeatureManager structures, @Nonnull ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(@Nonnull Executor executor, @Nonnull Blender blender, @Nonnull StructureFeatureManager structures, @Nonnull ChunkAccess chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
@@ -116,13 +118,34 @@ public class BingoLobbyGenerator extends ChunkGenerator {
         return new NoiseColumn(0, new BlockState[]{});
     }
 
+    @Nonnull
     @Override
-    public void applyCarvers(long seed, @Nonnull BiomeManager biomeManager, @Nonnull ChunkAccess chunk, @Nonnull GenerationStep.Carving carving) {
+    public Climate.Sampler climateSampler() {
+        return (x, y, z) -> Climate.target(0, 0, 0, 0, 0, 0);
+    }
+
+    @Override
+    public void applyCarvers(@Nonnull WorldGenRegion level, long seed, @Nonnull BiomeManager biomes, @Nonnull StructureFeatureManager structures, @Nonnull ChunkAccess chunk, @Nonnull GenerationStep.Carving step) {
         //
     }
 
     @Override
-    public void applyBiomeDecoration(@Nonnull WorldGenRegion region, @Nonnull StructureFeatureManager structureManager) {
+    public void spawnOriginalMobs(@Nonnull WorldGenRegion level) {
         //
+    }
+
+    @Override
+    public int getGenDepth() {
+        return 384;
+    }
+
+    @Override
+    public int getSeaLevel() {
+        return 63;
+    }
+
+    @Override
+    public int getMinY() {
+        return 0;
     }
 }

@@ -2,13 +2,14 @@ package io.github.noeppi_noeppi.mods.bingolobby.dimension;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
-import io.github.noeppi_noeppi.libx.annotation.codec.Codecs;
+import io.github.noeppi_noeppi.libx.annotation.api.Codecs;
 import io.github.noeppi_noeppi.libx.annotation.codec.PrimaryConstructor;
 import io.github.noeppi_noeppi.mods.bingolobby.BingoLobby;
 import io.github.noeppi_noeppi.mods.bingolobby.ModBiomes;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Climate;
 
 import javax.annotation.Nonnull;
 
@@ -38,7 +39,7 @@ public class BingoLobbyBiomeProvider extends BiomeSource {
 
     @Nonnull
     @Override
-    public Biome getNoiseBiome(int x, int y, int z) {
+    public Biome getNoiseBiome(int x, int y, int z, @Nonnull Climate.Sampler sampler) {
         //noinspection ConstantConditions
         return this.biomeRegistry.get(ModBiomes.lobbyBiome.getRegistryName());
     }

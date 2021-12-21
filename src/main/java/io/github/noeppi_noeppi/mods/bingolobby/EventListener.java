@@ -12,8 +12,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
 
 import java.nio.file.Path;
 
@@ -69,8 +69,8 @@ public class EventListener {
     }
 
     @SubscribeEvent
-    public void preServerStart(FMLServerAboutToStartEvent event) {
-        Path dimensionFolder = FMLPaths.GAMEDIR.get().resolve(event.getServer().storageSource.getDimensionPath(ModDimensions.LOBBY_DIMENSION).toPath()).normalize();
+    public void preServerStart(ServerAboutToStartEvent event) {
+        Path dimensionFolder = FMLPaths.GAMEDIR.get().resolve(event.getServer().storageSource.getDimensionPath(ModDimensions.LOBBY_DIMENSION).normalize()).normalize();
         WorldPresetManager.copyWorld(dimensionFolder);
     }
 }

@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -144,8 +144,8 @@ public class Lobby extends SavedData {
 
     public void load(@Nonnull CompoundTag nbt) {
         this.vips.clear();
-        if (nbt.contains("vips", Constants.NBT.TAG_LIST)) {
-            ListTag vipList = nbt.getList("vips", Constants.NBT.TAG_COMPOUND);
+        if (nbt.contains("vips", Tag.TAG_LIST)) {
+            ListTag vipList = nbt.getList("vips", Tag.TAG_COMPOUND);
             for (int i = 0; i < vipList.size(); i++) {
                 CompoundTag entry = vipList.getCompound(i);
                 this.vips.add(entry.getUUID("player"));
@@ -153,7 +153,7 @@ public class Lobby extends SavedData {
         }
         
         this.vipTeams.clear();
-        if (nbt.contains("vipTeams", Constants.NBT.TAG_INT_ARRAY)) {
+        if (nbt.contains("vipTeams", Tag.TAG_INT_ARRAY)) {
             int[] vipTeamsList = nbt.getIntArray("vipTeams");
             this.vipTeams.addAll(Arrays.stream(vipTeamsList).mapToObj(DyeColor::byId).collect(Collectors.toSet()));
         }
