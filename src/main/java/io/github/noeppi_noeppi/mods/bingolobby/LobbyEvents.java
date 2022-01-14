@@ -1,6 +1,7 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
 import io.github.noeppi_noeppi.libx.event.RandomTickEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
@@ -135,7 +136,7 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
-        if (!event.player.getCommandSenderWorld().isClientSide && !event.player.isDeadOrDying() && event.player.tickCount % 20 == 0 && event.player.level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (!event.player.level.isClientSide && !event.player.isDeadOrDying() && event.player.tickCount % 20 == 0 && event.player.level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.player.setHealth(20);
             event.player.getFoodData().setFoodLevel(20);
             event.player.setAirSupply(event.player.getMaxAirSupply());
@@ -143,6 +144,13 @@ public class LobbyEvents {
             if (event.player.getY() < -3 && event.player instanceof ServerPlayer) {
                 ModDimensions.teleportToLobby((ServerPlayer) event.player, false);
             }
+        }
+    }
+    
+    @SubscribeEvent
+    public void levelTick(TickEvent.WorldTickEvent event) {
+        if (!event.world.dimension().equals(ModDimensions.LOBBY_DIMENSION) && event.world instanceof ServerLevel level) {
+            level.setWeatherParameters(6000, 0, false ,false);
         }
     }
     
