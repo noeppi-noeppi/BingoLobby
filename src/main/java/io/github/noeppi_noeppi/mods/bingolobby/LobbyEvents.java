@@ -150,7 +150,7 @@ public class LobbyEvents {
     @SubscribeEvent
     public void levelTick(TickEvent.WorldTickEvent event) {
         if (!event.world.dimension().equals(ModDimensions.LOBBY_DIMENSION) && event.world instanceof ServerLevel level) {
-            level.setWeatherParameters(6000, 0, false ,false);
+            level.setWeatherParameters(6000, 0, false, false);
         }
     }
     
