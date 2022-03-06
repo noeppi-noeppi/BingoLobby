@@ -10,12 +10,12 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.18.1-3.1.0")
+    annotationProcessor fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.18.2-3.2.1")
 
-    implementation fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.18.1-3.1.0")
-    implementation fg.deobf("io.github.noeppi_noeppi.mods:Bongo:1.18.1-2.1.0")
-    compileOnly fg.deobf("de.melanx:SkyblockBuilder:1.18.1-3.0.3")
+    implementation fg.deobf("io.github.noeppi_noeppi.mods:LibX:1.18.2-3.2.1")
+    implementation fg.deobf("io.github.noeppi_noeppi.mods:Bongo:1.18.2-2.2.0")
+    compileOnly fg.deobf("de.melanx:SkyblockBuilder:1.18.1-3.0.3") // TODO 1.18.2 version
 
-    runtimeOnly fg.deobf("mezz.jei:jei-1.18.1:9.1.1.48")
-    runtimeOnly fg.deobf("de.melanx:JustEnoughAdvancements:1.18.1-3.1.0")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.4.3.123")
+    runtimeOnly fg.deobf("de.melanx:JustEnoughAdvancements:1.18.2-3.2.0")
 }

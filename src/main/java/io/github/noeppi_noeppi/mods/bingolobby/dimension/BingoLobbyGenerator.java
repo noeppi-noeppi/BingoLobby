@@ -2,10 +2,13 @@ package io.github.noeppi_noeppi.mods.bingolobby.dimension;
 
 import com.mojang.serialization.Codec;
 import io.github.noeppi_noeppi.libx.annotation.api.Codecs;
+import io.github.noeppi_noeppi.libx.annotation.codec.Dynamic;
 import io.github.noeppi_noeppi.libx.annotation.codec.PrimaryConstructor;
 import io.github.noeppi_noeppi.mods.bingolobby.BingoLobby;
 import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -18,12 +21,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -31,11 +37,13 @@ public class BingoLobbyGenerator extends ChunkGenerator {
 
     public static final Codec<BingoLobbyGenerator> CODEC = Codecs.get(BingoLobby.class, BingoLobbyGenerator.class);
 
+    public final Registry<StructureSet> structureRegistry;
     public final BiomeSource biomeSource;
 
     @PrimaryConstructor
-    public BingoLobbyGenerator(BiomeSource biomeSource) {
-        super(biomeSource, biomeSource, new StructureSettings(false), 0);
+    public BingoLobbyGenerator(@Dynamic(StructureRegistryCodec.class) Registry<StructureSet> structureRegistry, BiomeSource biomeSource) {
+        super(structureRegistry, Optional.of(HolderSet.direct()), biomeSource);
+        this.structureRegistry = structureRegistry;
         this.biomeSource = biomeSource;
     }
 
@@ -48,7 +56,7 @@ public class BingoLobbyGenerator extends ChunkGenerator {
     @Nonnull
     @Override
     public ChunkGenerator withSeed(long seed) {
-        return new BingoLobbyGenerator(this.biomeSource);
+        return new BingoLobbyGenerator(this.structureSets, this.biomeSource);
     }
 
     @Override
@@ -121,7 +129,17 @@ public class BingoLobbyGenerator extends ChunkGenerator {
     @Nonnull
     @Override
     public Climate.Sampler climateSampler() {
-        return (x, y, z) -> Climate.target(0, 0, 0, 0, 0, 0);
+        return new Climate.Sampler(
+                DensityFunctions.constant(0), DensityFunctions.constant(0),
+                DensityFunctions.constant(0), DensityFunctions.constant(0),
+                DensityFunctions.constant(0), DensityFunctions.constant(0),
+                List.of()
+        );
+    }
+
+    @Override
+    public void addDebugScreenInfo(@Nonnull List<String> list, @Nonnull BlockPos pos) {
+        //
     }
 
     @Override
