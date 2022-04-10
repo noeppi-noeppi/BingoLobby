@@ -8,11 +8,14 @@ import io.github.noeppi_noeppi.mods.bingolobby.BingoLobby;
 import io.github.noeppi_noeppi.mods.bingolobby.ModBiomes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 public class BingoLobbyBiomeProvider extends BiomeSource {
 
@@ -22,7 +25,7 @@ public class BingoLobbyBiomeProvider extends BiomeSource {
     
     @PrimaryConstructor
     public BingoLobbyBiomeProvider(@Dynamic(BiomeRegistryCodec.class) Registry<Biome> biomeRegistry) {
-        super(biomeRegistry.getResourceKey(ModBiomes.lobbyBiome).flatMap(biomeRegistry::getHolder).stream());
+        super(Objects.requireNonNull(ForgeRegistries.BIOMES.getResourceKey(ModBiomes.lobbyBiome), "Lobby biome not registered").flatMap(biomeRegistry::getHolder).stream());
         this.biomeRegistry = biomeRegistry;
     }
     
@@ -41,6 +44,7 @@ public class BingoLobbyBiomeProvider extends BiomeSource {
     @Nonnull
     @Override
     public Holder<Biome> getNoiseBiome(int x, int y, int z, @Nonnull Climate.Sampler sampler) {
-        return this.biomeRegistry.getHolderOrThrow(this.biomeRegistry.getResourceKey(ModBiomes.lobbyBiome).orElseThrow(() -> new IllegalStateException("Bingo lobby biome not registered")));
+        return this.biomeRegistry.getHolder(ResourceKey.create(Registry.BIOME_REGISTRY, Objects.requireNonNull(ModBiomes.lobbyBiome.getRegistryName(), "Bingo lobby biome has no registry name")))
+                .orElseThrow(() -> new IllegalStateException("Bingo lobby biome not found in biome registry"));
     }
 }
