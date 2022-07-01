@@ -1,7 +1,7 @@
 package io.github.noeppi_noeppi.mods.bingolobby.network;
 
-import io.github.noeppi_noeppi.libx.mod.ModX;
-import io.github.noeppi_noeppi.libx.network.NetworkX;
+import org.moddingx.libx.mod.ModX;
+import org.moddingx.libx.network.NetworkX;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
 import io.github.noeppi_noeppi.mods.bongo.network.BongoMessageType;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 
-import io.github.noeppi_noeppi.libx.network.NetworkX.Protocol;
+import org.moddingx.libx.network.NetworkX.Protocol;
 
 public class LobbyNetwork extends NetworkX {
 

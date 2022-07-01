@@ -4,10 +4,10 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.event.RegisterCommandsEvent;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
-import static io.github.noeppi_noeppi.libx.command.EnumArgument2.enumArgument;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 import static net.minecraft.commands.arguments.EntityArgument.players;
+import static org.moddingx.libx.command.EnumArgument2.enumArgument;
 
 public class LobbyCommands {
 

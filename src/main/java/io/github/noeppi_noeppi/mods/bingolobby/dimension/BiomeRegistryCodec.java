@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.structure.StructureSet;
 
 public class BiomeRegistryCodec {
     

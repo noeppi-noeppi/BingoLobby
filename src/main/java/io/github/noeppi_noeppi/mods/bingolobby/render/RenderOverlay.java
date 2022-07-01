@@ -2,8 +2,8 @@ package io.github.noeppi_noeppi.mods.bingolobby.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.noeppi_noeppi.libx.render.ClientTickHandler;
-import io.github.noeppi_noeppi.libx.render.RenderHelper;
+import org.moddingx.libx.render.ClientTickHandler;
+import org.moddingx.libx.render.RenderHelper;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
 import io.github.noeppi_noeppi.mods.bingolobby.ModDimensions;
 import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
@@ -29,7 +29,7 @@ public class RenderOverlay {
     
     @SubscribeEvent
     public void renderOverlay(RenderGameOverlayEvent.Post event) {
-        PoseStack poseStack = event.getMatrixStack();
+        PoseStack poseStack = event.getPoseStack();
         MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && mc.player != null && ModDimensions.LOBBY_DIMENSION.equals(mc.player.level.dimension()) && (mc.screen == null || mc.screen instanceof ChatScreen) && !Keybinds.BIG_OVERLAY.isDown() && event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
@@ -40,38 +40,38 @@ public class RenderOverlay {
 
             MutableComponent countdown = null;
             if (lobby.getCountdown() >= 0) {
-                countdown = new TranslatableComponent("bingolobby.scoreboard.countdown",
-                        new TextComponent(Integer.toString(lobby.getCountdown() / 60)).withStyle(Style.EMPTY.applyFormats(ChatFormatting.GOLD, ChatFormatting.BOLD)),
-                        new TextComponent(String.format("%02d", lobby.getCountdown() % 60)).withStyle(Style.EMPTY.applyFormats(ChatFormatting.GOLD, ChatFormatting.BOLD))
+                countdown = Component.translatable("bingolobby.scoreboard.countdown",
+                        Component.literal(Integer.toString(lobby.getCountdown() / 60)).withStyle(Style.EMPTY.applyFormats(ChatFormatting.GOLD, ChatFormatting.BOLD)),
+                        Component.literal(String.format("%02d", lobby.getCountdown() % 60)).withStyle(Style.EMPTY.applyFormats(ChatFormatting.GOLD, ChatFormatting.BOLD))
                 ).withStyle(ChatFormatting.WHITE);
             }
 
-            MutableComponent playersOnline = new TranslatableComponent("bingolobby.scoreboard.online",
-                    new TextComponent(Integer.toString(netHandler.getOnlinePlayers().size())).withStyle(Style.EMPTY.applyFormats(ChatFormatting.GOLD, ChatFormatting.BOLD))
+            MutableComponent playersOnline = Component.translatable("bingolobby.scoreboard.online",
+                    Component.literal(Integer.toString(netHandler.getOnlinePlayers().size())).withStyle(Style.EMPTY.applyFormats(ChatFormatting.GOLD, ChatFormatting.BOLD))
             ).withStyle(ChatFormatting.WHITE);
 
             MutableComponent perTeam;
             if (lobby.getMaxPlayers() == 0) {
-                perTeam = new TranslatableComponent("bingolobby.scoreboard.no_joining").withStyle(ChatFormatting.WHITE);
+                perTeam = Component.translatable("bingolobby.scoreboard.no_joining").withStyle(ChatFormatting.WHITE);
             } else if (lobby.getMaxPlayers() < 0) {
-                perTeam = new TranslatableComponent("bingolobby.scoreboard.players_per_team",
-                        new TextComponent("∞").withStyle(Style.EMPTY.applyFormats(ChatFormatting.GOLD))
+                perTeam = Component.translatable("bingolobby.scoreboard.players_per_team",
+                        Component.literal("∞").withStyle(Style.EMPTY.applyFormats(ChatFormatting.GOLD))
                 ).withStyle(ChatFormatting.WHITE);
             } else {
-                perTeam = new TranslatableComponent("bingolobby.scoreboard.players_per_team",
-                        new TextComponent(Integer.toString(lobby.getMaxPlayers())).withStyle(Style.EMPTY.applyFormats(ChatFormatting.GOLD, ChatFormatting.BOLD))
+                perTeam = Component.translatable("bingolobby.scoreboard.players_per_team",
+                        Component.literal(Integer.toString(lobby.getMaxPlayers())).withStyle(Style.EMPTY.applyFormats(ChatFormatting.GOLD, ChatFormatting.BOLD))
                 ).withStyle(ChatFormatting.WHITE);
             }
 
-            MutableComponent statusValue = new TranslatableComponent(lobby.vip(mc.player) ? "bingolobby.scoreboard.status.vip" : "bingolobby.scoreboard.status.player").withStyle(Style.EMPTY.applyFormats(lobby.vip(mc.player) ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.GOLD, ChatFormatting.BOLD));
-            MutableComponent status = new TranslatableComponent("bingolobby.scoreboard.status.info", statusValue).withStyle(ChatFormatting.WHITE);
+            MutableComponent statusValue = Component.translatable(lobby.vip(mc.player) ? "bingolobby.scoreboard.status.vip" : "bingolobby.scoreboard.status.player").withStyle(Style.EMPTY.applyFormats(lobby.vip(mc.player) ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.GOLD, ChatFormatting.BOLD));
+            MutableComponent status = Component.translatable("bingolobby.scoreboard.status.info", statusValue).withStyle(ChatFormatting.WHITE);
 
             MutableComponent teamText;
             if (bongo.active()) {
                 Team team = bongo.active() ? bongo.getTeam(mc.player) : null;
-                teamText = team == null ? new TranslatableComponent("bingolobby.scoreboard.noteam") : team.getName().withStyle(ChatFormatting.BOLD);
+                teamText = team == null ? Component.translatable("bingolobby.scoreboard.noteam") : team.getName().withStyle(ChatFormatting.BOLD);
             } else {
-                teamText = new TranslatableComponent("bingolobby.scoreboard.nogame");
+                teamText = Component.translatable("bingolobby.scoreboard.nogame");
             }
             
             Font font = mc.font;
@@ -107,7 +107,7 @@ public class RenderOverlay {
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.setShaderTexture(0, RenderHelper.TEXTURE_WHITE);
-            RenderSystem.setShaderColor(0, 0, 0, (float) mc.options.textBackgroundOpacity);
+            RenderSystem.setShaderColor(0, 0, 0, (float) (double) mc.options.textBackgroundOpacity().get());
             GuiComponent.blit(poseStack, 0, 0, 0, 0, width, height, 256, 256);
             RenderSystem.disableBlend();
 

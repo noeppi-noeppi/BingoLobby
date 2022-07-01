@@ -3,8 +3,8 @@ package io.github.noeppi_noeppi.mods.bingolobby;
 import io.github.noeppi_noeppi.mods.bongo.Bongo;
 import io.github.noeppi_noeppi.mods.bongo.data.Team;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.DyeColor;
@@ -38,7 +38,7 @@ public class EventListener {
                     Lobby lobby = Lobby.get(event.player.level);
                     MutableComponent tc = lobby.canAccess(event.player, team);
                     if (tc != null) {
-                        event.player.sendMessage(tc.withStyle(ChatFormatting.AQUA), event.player.getUUID());
+                        event.player.sendSystemMessage(tc.withStyle(ChatFormatting.AQUA));
                         ModDimensions.teleportToLobby((ServerPlayer) event.player, false);
                     } else {
                         if (team == null) {
@@ -52,7 +52,7 @@ public class EventListener {
                     }
                 }
             } else if (color != null) {
-                event.player.sendMessage(new TranslatableComponent("bingolobby.nojoin.noactive").withStyle(ChatFormatting.AQUA), event.player.getUUID());
+                event.player.sendSystemMessage(Component.translatable("bingolobby.nojoin.noactive").withStyle(ChatFormatting.AQUA));
                 ModDimensions.teleportToLobby((ServerPlayer) event.player, false);
             }
         }

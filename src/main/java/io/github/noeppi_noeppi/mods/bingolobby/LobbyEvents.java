@@ -1,6 +1,5 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
-import io.github.noeppi_noeppi.libx.event.RandomTickEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.MobSpawnType;
@@ -89,8 +88,8 @@ public class LobbyEvents {
     }
     
     @SubscribeEvent
-    public void cropGrow(BlockEvent.BlockToolInteractEvent event) {
-        if (event.getPlayer().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !event.getPlayer().hasPermissions(2)) {
+    public void cropGrow(BlockEvent.BlockToolModificationEvent event) {
+        if (event.getWorld() instanceof ServerLevel level && level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (event.getPlayer() == null || !event.getPlayer().hasPermissions(2))) {
             event.setCanceled(true);
         }
     }
@@ -151,20 +150,6 @@ public class LobbyEvents {
     public void levelTick(TickEvent.WorldTickEvent event) {
         if (!event.world.dimension().equals(ModDimensions.LOBBY_DIMENSION) && event.world instanceof ServerLevel level) {
             level.setWeatherParameters(6000, 0, false, false);
-        }
-    }
-    
-    @SubscribeEvent
-    public void randomTickBlock(RandomTickEvent.Block event) {
-        if (event.getLevel().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
-            event.setCanceled(true);
-        }
-    }
-    
-    @SubscribeEvent
-    public void randomTickFluid(RandomTickEvent.Fluid event) {
-        if (event.getLevel().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
-            event.setCanceled(true);
         }
     }
 }

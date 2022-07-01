@@ -6,7 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -21,7 +21,7 @@ public class UnvipCommand implements Command<CommandSourceStack> {
         EntitySelector vipSelector = context.getArgument("players", EntitySelector.class);
         List<ServerPlayer> players = vipSelector.findPlayers(context.getSource());
         players.forEach(p -> lobby.setVip(p, false));
-        context.getSource().sendSuccess(new TranslatableComponent("bingolobby.command.vipremove", Integer.toString(players.size())), true);
+        context.getSource().sendSuccess(Component.translatable("bingolobby.command.vipremove", Integer.toString(players.size())), true);
 
         return 0;
     }

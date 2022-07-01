@@ -22,3 +22,7 @@ eclipse
 /run*
 /src/generated/resources/.cache
 
+# CoreMods
+*.d.ts
+**/tsconfig.json
+

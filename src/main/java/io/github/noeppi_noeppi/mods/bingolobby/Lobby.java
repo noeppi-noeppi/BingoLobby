@@ -1,6 +1,7 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
-import io.github.noeppi_noeppi.libx.util.ServerMessages;
+import net.minecraft.network.chat.Component;
+import org.moddingx.libx.util.game.ServerMessages;
 import io.github.noeppi_noeppi.mods.bongo.Bongo;
 import io.github.noeppi_noeppi.mods.bongo.data.Team;
 import io.github.noeppi_noeppi.mods.bongo.network.BongoMessageType;
@@ -11,8 +12,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -116,9 +115,9 @@ public class Lobby extends SavedData {
         if (team == null) {
             return null;
         } else if (this.vipTeam(team.color) && !this.vip(player)) {
-            return new TranslatableComponent("bingolobby.nojoin.novip");
+            return Component.translatable("bingolobby.nojoin.novip");
         } else if (this.maxPlayers >= 0 && team.getPlayers().size() >= this.maxPlayers) {
-            return new TranslatableComponent("bingolobby.nojoin.full");
+            return Component.translatable("bingolobby.nojoin.full");
         }
         return null;
     }
@@ -177,16 +176,13 @@ public class Lobby extends SavedData {
             if (this.countdown > 0) {
                 this.countdown -= 1;
                 if ((this.countdown <= 10 && this.countdown >= 1) || this.countdown < 60 && this.countdown > 10 && this.countdown % 10 == 0) {
-                    ServerMessages.broadcast(this.level,
-                            new TranslatableComponent("bingolobby.countdown.seconds",
-                                    new TextComponent(Integer.toString(this.countdown)).withStyle(Style.EMPTY.applyFormats(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD))
-                            ).withStyle(ChatFormatting.DARK_AQUA));
+                    ServerMessages.broadcast(this.level, Component.translatable("bingolobby.countdown.seconds",
+                            Component.literal(Integer.toString(this.countdown)).withStyle(Style.EMPTY.applyFormats(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD))
+                    ).withStyle(ChatFormatting.DARK_AQUA));
                 } else if (this.countdown >= 60 && this.countdown % 60 == 0) {
-                    ServerMessages.broadcast(this.level,
-                            new TranslatableComponent("bingolobby.countdown.minutes",
-                                    new TextComponent(Integer.toString(this.countdown / 60)).withStyle(Style.EMPTY.applyFormats(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD))
-                            ).withStyle(ChatFormatting.DARK_AQUA)
-                    );
+                    ServerMessages.broadcast(this.level, Component.translatable("bingolobby.countdown.minutes",
+                            Component.literal(Integer.toString(this.countdown / 60)).withStyle(Style.EMPTY.applyFormats(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD))
+                    ).withStyle(ChatFormatting.DARK_AQUA));
                 } else if (this.countdown == 0) {
                     this.countdown = -1;
                     bongo.start();

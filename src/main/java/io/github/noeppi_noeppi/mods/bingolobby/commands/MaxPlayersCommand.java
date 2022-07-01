@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 public class MaxPlayersCommand implements Command<CommandSourceStack> {
@@ -20,9 +20,9 @@ public class MaxPlayersCommand implements Command<CommandSourceStack> {
         }
         lobby.setMaxPlayers(maxPlayers);
         if (maxPlayers < 0) {
-            context.getSource().sendSuccess(new TranslatableComponent("bingolobby.command.maxplayers.unlimited"), true);
+            context.getSource().sendSuccess(Component.translatable("bingolobby.command.maxplayers.unlimited"), true);
         } else {
-            context.getSource().sendSuccess(new TranslatableComponent("bingolobby.command.maxplayers.limited", Integer.toString(maxPlayers)), true);
+            context.getSource().sendSuccess(Component.translatable("bingolobby.command.maxplayers.limited", Integer.toString(maxPlayers)), true);
         }
         return 0;
     }

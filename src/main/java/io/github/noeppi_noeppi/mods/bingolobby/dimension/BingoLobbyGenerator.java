@@ -1,9 +1,6 @@
 package io.github.noeppi_noeppi.mods.bingolobby.dimension;
 
 import com.mojang.serialization.Codec;
-import io.github.noeppi_noeppi.libx.annotation.api.Codecs;
-import io.github.noeppi_noeppi.libx.annotation.codec.Dynamic;
-import io.github.noeppi_noeppi.libx.annotation.codec.PrimaryConstructor;
 import io.github.noeppi_noeppi.mods.bingolobby.BingoLobby;
 import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
 import net.minecraft.core.BlockPos;
@@ -13,19 +10,21 @@ import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
+import org.moddingx.libx.annotation.api.Codecs;
+import org.moddingx.libx.annotation.codec.Dynamic;
+import org.moddingx.libx.annotation.codec.PrimaryConstructor;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -53,14 +52,8 @@ public class BingoLobbyGenerator extends ChunkGenerator {
         return CODEC;
     }
 
-    @Nonnull
     @Override
-    public ChunkGenerator withSeed(long seed) {
-        return new BingoLobbyGenerator(this.structureSets, this.biomeSource);
-    }
-
-    @Override
-    public void buildSurface(@Nonnull WorldGenRegion level, @Nonnull StructureFeatureManager structures, @Nonnull ChunkAccess chunk) {
+    public void buildSurface(@Nonnull WorldGenRegion level, @Nonnull StructureManager structures, @Nonnull RandomState random, @Nonnull ChunkAccess chunk) {
         ChunkPos cp = chunk.getPos();
         int xs = cp.getMinBlockX();
         int zs = cp.getMinBlockZ();
@@ -82,7 +75,6 @@ public class BingoLobbyGenerator extends ChunkGenerator {
                 for (int z = zs; z <= ze; z++) {
                     pos.setX(x);
                     pos.setZ(z);
-
                     
                     pos.setY(chunk.getMinBuildHeight());
                     chunk.setBlockState(pos, bedrock, false);
@@ -108,42 +100,31 @@ public class BingoLobbyGenerator extends ChunkGenerator {
             }
         }
     }
-
+    
     @Nonnull
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(@Nonnull Executor executor, @Nonnull Blender blender, @Nonnull StructureFeatureManager structures, @Nonnull ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(@Nonnull Executor executor, @Nonnull Blender blender, @Nonnull RandomState random, @Nonnull StructureManager structures, @Nonnull ChunkAccess chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
     @Override
-    public int getBaseHeight(int x, int z, @Nonnull Heightmap.Types heightmap, @Nonnull LevelHeightAccessor level) {
+    public int getBaseHeight(int x, int z, @Nonnull Heightmap.Types heightmap, @Nonnull LevelHeightAccessor level, @Nonnull RandomState random) {
         return 64;
     }
 
     @Nonnull
     @Override
-    public NoiseColumn getBaseColumn(int i, int i1, @Nonnull LevelHeightAccessor levelHeightAccessor) {
+    public NoiseColumn getBaseColumn(int i, int i1, @Nonnull LevelHeightAccessor levelHeightAccessor, @Nonnull RandomState random) {
         return new NoiseColumn(0, new BlockState[]{});
     }
-
-    @Nonnull
+    
     @Override
-    public Climate.Sampler climateSampler() {
-        return new Climate.Sampler(
-                DensityFunctions.constant(0), DensityFunctions.constant(0),
-                DensityFunctions.constant(0), DensityFunctions.constant(0),
-                DensityFunctions.constant(0), DensityFunctions.constant(0),
-                List.of()
-        );
-    }
-
-    @Override
-    public void addDebugScreenInfo(@Nonnull List<String> list, @Nonnull BlockPos pos) {
+    public void addDebugScreenInfo(@Nonnull List<String> list, @Nonnull RandomState random, @Nonnull BlockPos pos) {
         //
     }
 
     @Override
-    public void applyCarvers(@Nonnull WorldGenRegion level, long seed, @Nonnull BiomeManager biomes, @Nonnull StructureFeatureManager structures, @Nonnull ChunkAccess chunk, @Nonnull GenerationStep.Carving step) {
+    public void applyCarvers(@Nonnull WorldGenRegion level, long seed, @Nonnull RandomState random, @Nonnull BiomeManager biomes, @Nonnull StructureManager structures, @Nonnull ChunkAccess chunk, @Nonnull GenerationStep.Carving step) {
         //
     }
 

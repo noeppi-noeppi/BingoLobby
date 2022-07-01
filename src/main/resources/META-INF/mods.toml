@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[41,)"
 license="APACHE-2.0"
 issueTrackerURL="https://github.com/noeppi-noeppi/BingoLobby/issues"
 
@@ -17,34 +17,34 @@ A lobby for the Bongo mod.
 [[dependencies.bingolobby]]
     modId="forge"
     mandatory=true
-    versionRange="[40.0.12,)"
+    versionRange="[41.0.62,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.bingolobby]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18.2,)"
+    versionRange="[1.19,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.bingolobby]]
     modId="bongo"
     mandatory=true
-    versionRange="[1.18.2-2.2.0,)"
+    versionRange="[1.19-3.0.0,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.bingolobby]]
     modId="libx"
     mandatory=true
-    versionRange="[1.18.2-3.2.1,)"
+    versionRange="[1.19-4.0.4,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.bingolobby]]
     modId="skyblockbuilder"
     mandatory=false
-    versionRange="[1.18.1-3.0.3,)"
+    versionRange="[1.19-4.0.4,)"
     ordering="NONE"
     side="BOTH"

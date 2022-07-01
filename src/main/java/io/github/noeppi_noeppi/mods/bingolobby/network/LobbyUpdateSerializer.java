@@ -1,6 +1,6 @@
 package io.github.noeppi_noeppi.mods.bingolobby.network;
 
-import io.github.noeppi_noeppi.libx.network.PacketSerializer;
+import org.moddingx.libx.network.PacketSerializer;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
 import io.github.noeppi_noeppi.mods.bongo.network.BongoMessageType;
 import net.minecraft.nbt.CompoundTag;

@@ -4,7 +4,7 @@ import io.github.noeppi_noeppi.mods.bingolobby.dimension.BingoLobbyBiomeProvider
 import io.github.noeppi_noeppi.mods.bingolobby.dimension.BingoLobbyGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -16,8 +16,8 @@ public class ModDimensions {
     public static final ResourceKey<Level> LOBBY_DIMENSION = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(BingoLobby.getInstance().modid, "lobby"));
 
     public static void init() {
-        Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(BingoLobby.getInstance().modid, "lobby_generator"), BingoLobbyGenerator.CODEC);
-        Registry.register(Registry.BIOME_SOURCE, new ResourceLocation(BingoLobby.getInstance().modid, "lobby_biome"), BingoLobbyBiomeProvider.CODEC);
+        BingoLobby.getInstance().register(Registry.CHUNK_GENERATOR_REGISTRY, "lobby_generator", BingoLobbyGenerator.CODEC);
+        BingoLobby.getInstance().register(Registry.BIOME_SOURCE_REGISTRY, "lobby_biome", BingoLobbyBiomeProvider.CODEC);
     }
     
     public static void teleportToLobby(ServerPlayer player, boolean yp) {
@@ -28,7 +28,7 @@ public class ModDimensions {
         } else {
             ServerLevel destination = player.getLevel().getServer().getLevel(ModDimensions.LOBBY_DIMENSION);
             if (destination == null) {
-                player.connection.disconnect(new TextComponent("BingoLobby failed to load. Please restart server."));
+                player.connection.disconnect(Component.literal("BingoLobby failed to load. Please restart server."));
             } else {
                 float yRot = yp ? 0 : player.getYRot();
                 float xRot = yp ? 0 : player.getXRot();

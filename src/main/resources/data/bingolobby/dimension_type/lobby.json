@@ -13,5 +13,7 @@
   "coordinate_scale": 1,
   "min_y": 0,
   "height": 256,
-  "logical_height": 256
+  "logical_height": 256,
+  "monster_spawn_light_level": 15,
+  "monster_spawn_block_light_limit": 0
 }

@@ -1,18 +1,17 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
-import io.github.noeppi_noeppi.libx.annotation.registration.RegisterClass;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.biome.OverworldBiomes;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 
-@RegisterClass
 public class ModBiomes {
 
-    public static final Biome lobbyBiome = new Biome.BiomeBuilder()
+    public static final Holder<Biome> lobbyBiome = BingoLobby.getInstance().createHolder(Registry.BIOME_REGISTRY, "lobby_biome", new Biome.BiomeBuilder()
             .temperature(0.9f)
-            .biomeCategory(Biome.BiomeCategory.NONE)
             .precipitation(Biome.Precipitation.NONE)
             .downfall(1)
             .mobSpawnSettings(new MobSpawnSettings.Builder().build())
@@ -25,5 +24,9 @@ public class ModBiomes {
                             .build()
             )
             .generationSettings(new BiomeGenerationSettings.Builder().build())
-            .build();
+            .build());
+    
+    public static void init() {
+        // load class
+    }
 }
