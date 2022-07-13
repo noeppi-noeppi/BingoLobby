@@ -11,29 +11,29 @@ public class DestinationControlEvents {
     
     @SubscribeEvent
     public void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer) {
-            Level level = event.getPlayer().getCommandSenderWorld();
+        if (event.getEntity() instanceof ServerPlayer) {
+            Level level = event.getEntity().getCommandSenderWorld();
             Bongo bongo = Bongo.get(level);
-            if ((!bongo.running() && !bongo.won()) || bongo.getTeams().stream().noneMatch(t -> t.hasPlayer(event.getPlayer()))) {
-                ModDimensions.teleportToLobby((ServerPlayer) event.getPlayer(), true);
+            if ((!bongo.running() && !bongo.won()) || bongo.getTeams().stream().noneMatch(t -> t.hasPlayer(event.getEntity()))) {
+                ModDimensions.teleportToLobby((ServerPlayer) event.getEntity(), true);
             }
-            BingoLobby.getNetwork().updateLobby(event.getPlayer(), BongoMessageType.FORCE);
+            BingoLobby.getNetwork().updateLobby(event.getEntity(), BongoMessageType.FORCE);
         }
     }
     
     @SubscribeEvent
     public void playerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer) {
-            Level level = event.getPlayer().getCommandSenderWorld();
+        if (event.getEntity() instanceof ServerPlayer) {
+            Level level = event.getEntity().getCommandSenderWorld();
             Bongo bongo = Bongo.get(level);
-            if ((!bongo.running() && !bongo.won()) || bongo.getTeams().stream().noneMatch(t -> t.hasPlayer(event.getPlayer()))) {
-                ModDimensions.teleportToLobby((ServerPlayer) event.getPlayer(), false);
+            if ((!bongo.running() && !bongo.won()) || bongo.getTeams().stream().noneMatch(t -> t.hasPlayer(event.getEntity()))) {
+                ModDimensions.teleportToLobby((ServerPlayer) event.getEntity(), false);
             }
         }
     }
 
     @SubscribeEvent
     public void playerChangeDim(PlayerEvent.PlayerChangedDimensionEvent event) {
-        BingoLobby.getNetwork().updateLobby(event.getPlayer());
+        BingoLobby.getNetwork().updateLobby(event.getEntity());
     }
 }

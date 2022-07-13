@@ -11,8 +11,8 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
@@ -59,10 +59,10 @@ public class EventListener {
     }
 
     @SubscribeEvent
-    public void lobbyTick(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && event.world instanceof ServerLevel level) {
+    public void lobbyTick(TickEvent.LevelTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && event.level instanceof ServerLevel level) {
             if (level.getServer().getTickCount() % 20 == 0 && ModDimensions.LOBBY_DIMENSION.equals(level.dimension())) {
-                Lobby lobby = Lobby.get(event.world);
+                Lobby lobby = Lobby.get(event.level);
                 lobby.tickCountdown();
             }
         }

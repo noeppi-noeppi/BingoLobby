@@ -2,8 +2,6 @@ package io.github.noeppi_noeppi.mods.bingolobby.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.moddingx.libx.render.ClientTickHandler;
-import org.moddingx.libx.render.RenderHelper;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
 import io.github.noeppi_noeppi.mods.bingolobby.ModDimensions;
 import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
@@ -16,23 +14,31 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.*;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import org.moddingx.libx.render.ClientTickHandler;
+import org.moddingx.libx.render.RenderHelper;
 
-public class RenderOverlay {
+public class RenderOverlay implements IGuiOverlay {
+    
+    public static RenderOverlay INSTANCE = new RenderOverlay();
+    
+    private RenderOverlay() {
+        
+    }
 
     private static final double relativeHeightMax = 0.3;
     private static final double relativeWidthMax = 0.3;
     private static final int padding = 4;
-    
-    @SubscribeEvent
-    public void renderOverlay(RenderGameOverlayEvent.Post event) {
-        PoseStack poseStack = event.getPoseStack();
-        MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+
+    @Override
+    public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int windowWidth, int windowHeight) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level != null && mc.player != null && ModDimensions.LOBBY_DIMENSION.equals(mc.player.level.dimension()) && (mc.screen == null || mc.screen instanceof ChatScreen) && !Keybinds.BIG_OVERLAY.isDown() && event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+        if (mc.level != null && mc.player != null && ModDimensions.LOBBY_DIMENSION.equals(mc.player.level.dimension()) && (mc.screen == null || mc.screen instanceof ChatScreen) && !Keybinds.BIG_OVERLAY.isDown()) {
+            gui.setupOverlayRenderState(true, false);
 
             Bongo bongo = Bongo.get(mc.level);
             Lobby lobby = Lobby.get(mc.level);
@@ -96,12 +102,12 @@ public class RenderOverlay {
             width = Math.max(width, font.width(LobbyConfig.title));
             width += (2 * padding);
 
-            double scaleFactor = Math.min(((mc.getWindow().getGuiScaledWidth() * relativeWidthMax) / width), ((mc.getWindow().getGuiScaledHeight() * relativeHeightMax) / height));
+            double scaleFactor = Math.min(((windowWidth * relativeWidthMax) / width), ((windowHeight * relativeHeightMax) / height));
             double totalWidth = width * scaleFactor;
             double totalHeight = height * scaleFactor;
             
             poseStack.pushPose();
-            poseStack.translate(mc.getWindow().getGuiScaledWidth() - totalWidth, (mc.getWindow().getGuiScaledHeight() / 2d) - (totalHeight / 2), 0);
+            poseStack.translate(windowWidth - totalWidth, (windowHeight / 2d) - (totalHeight / 2), 0);
             poseStack.scale((float) scaleFactor, (float) scaleFactor, 1);
             
             RenderSystem.enableBlend();

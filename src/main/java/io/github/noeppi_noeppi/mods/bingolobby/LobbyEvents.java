@@ -11,8 +11,8 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -20,7 +20,7 @@ public class LobbyEvents {
 
     @SubscribeEvent
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getPlayer().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !event.getPlayer().hasPermissions(2)) {
+        if (event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !event.getEntity().hasPermissions(2)) {
             if (event.isCancelable()) {
                 event.setCanceled(true);
             }
@@ -43,7 +43,7 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void explode(ExplosionEvent.Start event) {
-        if (event.getWorld().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (event.getLevel().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.setCanceled(true);
         }
     }
@@ -57,7 +57,7 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void blockPlace(BlockEvent.EntityPlaceEvent event) {
-        if (event.getWorld() instanceof Level && ((Level) event.getWorld()).dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (event.getLevel() instanceof Level && ((Level) event.getLevel()).dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             if (!(event.getEntity() instanceof Player) || !event.getEntity().hasPermissions(2)) {
                 event.setCanceled(true);
             }
@@ -66,7 +66,7 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void blockMultiPlace(BlockEvent.EntityMultiPlaceEvent event) {
-        if (event.getWorld() instanceof Level && ((Level) event.getWorld()).dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (event.getLevel() instanceof Level && ((Level) event.getLevel()).dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             if (!(event.getEntity() instanceof Player) || !event.getEntity().hasPermissions(2)) {
                 event.setCanceled(true);
             }
@@ -82,14 +82,14 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void cropGrow(BlockEvent.CropGrowEvent.Pre event) {
-        if (event.getWorld() instanceof Level && ((Level) event.getWorld()).dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (event.getLevel() instanceof Level && ((Level) event.getLevel()).dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.setResult(Event.Result.DENY);
         }
     }
     
     @SubscribeEvent
     public void cropGrow(BlockEvent.BlockToolModificationEvent event) {
-        if (event.getWorld() instanceof ServerLevel level && level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (event.getPlayer() == null || !event.getPlayer().hasPermissions(2))) {
+        if (event.getLevel() instanceof ServerLevel level && level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (event.getPlayer() == null || !event.getPlayer().hasPermissions(2))) {
             event.setCanceled(true);
         }
     }
@@ -97,9 +97,9 @@ public class LobbyEvents {
     @SubscribeEvent
     public void mobSpawnAttempt(LivingSpawnEvent.CheckSpawn event) {
         Level level;
-        if (event.getWorld() instanceof Level) level = (Level) event.getWorld();
+        if (event.getLevel() instanceof Level) level = (Level) event.getLevel();
         else level = event.getEntity().level;
-        if (level != null && level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !(event.getEntity() instanceof Player)) {
+        if (level != null && level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.setResult(Event.Result.DENY);
         }
     }
@@ -107,9 +107,9 @@ public class LobbyEvents {
     @SubscribeEvent
     public void mobSpawn(LivingSpawnEvent.SpecialSpawn event) {
         Level level;
-        if (event.getWorld() instanceof Level) level = (Level) event.getWorld();
+        if (event.getLevel() instanceof Level) level = (Level) event.getLevel();
         else level = event.getEntity().level;
-        if (level != null && level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !(event.getEntity() instanceof Player)) {
+        if (level != null && level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             if (event.getSpawnReason() != MobSpawnType.SPAWN_EGG && event.getSpawnReason() != MobSpawnType.BUCKET
                     && event.getSpawnReason() != MobSpawnType.MOB_SUMMONED && event.getSpawnReason() != MobSpawnType.COMMAND) {
                 if (event.isCancelable()) {
@@ -147,8 +147,8 @@ public class LobbyEvents {
     }
     
     @SubscribeEvent
-    public void levelTick(TickEvent.WorldTickEvent event) {
-        if (!event.world.dimension().equals(ModDimensions.LOBBY_DIMENSION) && event.world instanceof ServerLevel level) {
+    public void levelTick(TickEvent.LevelTickEvent event) {
+        if (!event.level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && event.level instanceof ServerLevel level) {
             level.setWeatherParameters(6000, 0, false, false);
         }
     }

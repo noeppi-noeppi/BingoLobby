@@ -17,7 +17,7 @@ A lobby for the Bongo mod.
 [[dependencies.bingolobby]]
     modId="forge"
     mandatory=true
-    versionRange="[41.0.62,)"
+    versionRange="[41.0.96,)"
     ordering="NONE"
     side="BOTH"
 
@@ -31,20 +31,20 @@ A lobby for the Bongo mod.
 [[dependencies.bingolobby]]
     modId="bongo"
     mandatory=true
-    versionRange="[1.19-3.0.0,)"
+    versionRange="[1.19-3.0.1,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.bingolobby]]
     modId="libx"
     mandatory=true
-    versionRange="[1.19-4.0.4,)"
+    versionRange="[1.19-4.0.7,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.bingolobby]]
     modId="skyblockbuilder"
     mandatory=false
-    versionRange="[1.19-4.0.4,)"
+    versionRange="[1.19-4.0.13,)"
     ordering="NONE"
     side="BOTH"
