@@ -4,13 +4,8 @@ import com.mojang.serialization.Codec;
 import io.github.noeppi_noeppi.mods.bingolobby.BingoLobby;
 import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.server.level.WorldGenRegion;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
@@ -21,14 +16,11 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import net.minecraft.world.level.levelgen.structure.StructureSet;
 import org.moddingx.libx.annotation.api.Codecs;
-import org.moddingx.libx.annotation.codec.Dynamic;
 import org.moddingx.libx.annotation.codec.PrimaryConstructor;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -36,13 +28,11 @@ public class BingoLobbyGenerator extends ChunkGenerator {
 
     public static final Codec<BingoLobbyGenerator> CODEC = Codecs.get(BingoLobby.class, BingoLobbyGenerator.class);
 
-    public final Registry<StructureSet> structureRegistry;
     public final BiomeSource biomeSource;
 
     @PrimaryConstructor
-    public BingoLobbyGenerator(@Dynamic(StructureRegistryCodec.class) Registry<StructureSet> structureRegistry, BiomeSource biomeSource) {
-        super(structureRegistry, Optional.of(HolderSet.direct()), biomeSource);
-        this.structureRegistry = structureRegistry;
+    public BingoLobbyGenerator(BiomeSource biomeSource) {
+        super(biomeSource);
         this.biomeSource = biomeSource;
     }
 
@@ -125,6 +115,11 @@ public class BingoLobbyGenerator extends ChunkGenerator {
 
     @Override
     public void applyCarvers(@Nonnull WorldGenRegion level, long seed, @Nonnull RandomState random, @Nonnull BiomeManager biomes, @Nonnull StructureManager structures, @Nonnull ChunkAccess chunk, @Nonnull GenerationStep.Carving step) {
+        //
+    }
+
+    @Override
+    public void applyBiomeDecoration(@Nonnull WorldGenLevel level, @Nonnull ChunkAccess chunk, @Nonnull StructureManager structures) {
         //
     }
 

@@ -123,13 +123,13 @@ public class RenderOverlay implements IGuiOverlay {
 
             RenderSystem.setShaderTexture(0, RenderHelper.TEXTURE_WHITE);
             RenderHelper.rgb(0x00FF5B);
-            GuiComponent.blit(poseStack, 0, padding + font.lineHeight + (padding / 2), 0, 0, Math.round(width - (2 * padding)), 1, 256, 256);
+            GuiComponent.blit(poseStack, 0, padding + font.lineHeight + (padding / 2), 0, 0, width - (2 * padding), 1, 256, 256);
 
             if (!LobbyConfig.subtitle.isEmpty()) {
                 if (countdown != null && !LobbyConfig.countdown_in_subtitle2) {
                     this.renderLine(poseStack, font, countdown, (float) ((font.lineHeight + padding) + (2 * padding)), width);
                 } else {
-                    int subtitleIdx = (ClientTickHandler.ticksInGame / 60) % LobbyConfig.subtitle.size();
+                    int subtitleIdx = (ClientTickHandler.ticksInGame() / 60) % LobbyConfig.subtitle.size();
                     this.renderLine(poseStack, font, LobbyConfig.subtitle.get(subtitleIdx), (float) ((font.lineHeight + padding) + (2 * padding)), width);
                 }
             }
@@ -138,7 +138,7 @@ public class RenderOverlay implements IGuiOverlay {
                 if (countdown != null && LobbyConfig.countdown_in_subtitle2) {
                     this.renderLine(poseStack, font, countdown, (float) ((font.lineHeight + padding) + (2 * padding)), width);
                 } else {
-                    int subtitleIdx = (ClientTickHandler.ticksInGame / 60) % LobbyConfig.subtitle2.size();
+                    int subtitleIdx = (ClientTickHandler.ticksInGame() / 60) % LobbyConfig.subtitle2.size();
                     this.renderLine(poseStack, font, LobbyConfig.subtitle2.get(subtitleIdx), (float) (((LobbyConfig.subtitle.isEmpty() ? 1 : 2) * (font.lineHeight + padding)) + (2 * padding)), width);
                 }
             }
@@ -150,7 +150,7 @@ public class RenderOverlay implements IGuiOverlay {
             
             RenderSystem.setShaderTexture(0, RenderHelper.TEXTURE_WHITE);
             RenderHelper.rgb(0x00FF5B);
-            GuiComponent.blit(poseStack, 0, -(padding / 2), 0, 0, Math.round(width - (2 * padding)), 1, 256, 256);
+            GuiComponent.blit(poseStack, 0, -(padding / 2), 0, 0, width - (2 * padding), 1, 256, 256);
             
             this.renderLine(poseStack, font, playersOnline, padding, width);
             this.renderLine(poseStack, font, perTeam, (2 * padding) + font.lineHeight, width);
@@ -165,6 +165,7 @@ public class RenderOverlay implements IGuiOverlay {
 
     private void renderLine(PoseStack poseStack, Font font, Component line, double y, int width) {
         double x = Math.max(0, ((width - (2 * padding)) / 2d) - (font.width(line) / 2d));
-        font.drawShadow(poseStack, line, (float) x, (float) y, 0xFFFFFFFF);
+        RenderHelper.resetColor();
+        font.drawShadow(poseStack, line, (float) x, (float) y, 0xFFFFFF);
     }
 }

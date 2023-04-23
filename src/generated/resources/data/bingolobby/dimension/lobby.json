@@ -1,0 +1,10 @@
+{
+  "type": "bingolobby:lobby",
+  "generator": {
+    "type": "bingolobby:lobby_generator",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "bingolobby:lobby"
+    }
+  }
+}

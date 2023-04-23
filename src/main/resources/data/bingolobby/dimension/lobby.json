@@ -1,9 +1,0 @@
-{
-  "type": "bingolobby:lobby",
-  "generator": {
-    "biome_source": {
-      "type": "bingolobby:lobby_biome"
-    },
-    "type": "bingolobby:lobby_generator"
-  }
-}

@@ -1,9 +1,8 @@
 package io.github.noeppi_noeppi.mods.bingolobby;
 
-import io.github.noeppi_noeppi.mods.bingolobby.dimension.BingoLobbyBiomeProvider;
 import io.github.noeppi_noeppi.mods.bingolobby.dimension.BingoLobbyGenerator;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,11 +12,10 @@ import net.minecraft.world.level.Level;
 
 public class ModDimensions {
 
-    public static final ResourceKey<Level> LOBBY_DIMENSION = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(BingoLobby.getInstance().modid, "lobby"));
+    public static final ResourceKey<Level> LOBBY_DIMENSION = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(BingoLobby.getInstance().modid, "lobby"));
 
     public static void init() {
-        BingoLobby.getInstance().register(Registry.CHUNK_GENERATOR_REGISTRY, "lobby_generator", BingoLobbyGenerator.CODEC);
-        BingoLobby.getInstance().register(Registry.BIOME_SOURCE_REGISTRY, "lobby_biome", BingoLobbyBiomeProvider.CODEC);
+        BingoLobby.getInstance().register(Registries.CHUNK_GENERATOR, "lobby_generator", BingoLobbyGenerator.CODEC);
     }
     
     public static void teleportToLobby(ServerPlayer player, boolean yp) {

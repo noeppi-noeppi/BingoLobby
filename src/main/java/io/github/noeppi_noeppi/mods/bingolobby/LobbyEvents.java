@@ -2,14 +2,14 @@ package io.github.noeppi_noeppi.mods.bingolobby;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ExplosionEvent;
@@ -94,41 +94,27 @@ public class LobbyEvents {
         }
     }
     
-    @SubscribeEvent
-    public void mobSpawnAttempt(LivingSpawnEvent.CheckSpawn event) {
+    @SubscribeEvent(receiveCanceled = true)
+    public void mobSpawnAttempt(MobSpawnEvent.FinalizeSpawn event) {
         Level level;
         if (event.getLevel() instanceof Level) level = (Level) event.getLevel();
         else level = event.getEntity().level;
         if (level != null && level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
-            event.setResult(Event.Result.DENY);
-        }
-    }
-    
-    @SubscribeEvent
-    public void mobSpawn(LivingSpawnEvent.SpecialSpawn event) {
-        Level level;
-        if (event.getLevel() instanceof Level) level = (Level) event.getLevel();
-        else level = event.getEntity().level;
-        if (level != null && level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
-            if (event.getSpawnReason() != MobSpawnType.SPAWN_EGG && event.getSpawnReason() != MobSpawnType.BUCKET
-                    && event.getSpawnReason() != MobSpawnType.MOB_SUMMONED && event.getSpawnReason() != MobSpawnType.COMMAND) {
-                if (event.isCancelable()) {
-                    event.setCanceled(true);
-                }
-            }
+            event.setCanceled(true);
+            event.setSpawnCancelled(true);
         }
     }
     
     @SubscribeEvent
     public void livingAttack(LivingAttackEvent event) {
-        if (!event.getSource().isBypassInvul() && event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (!(event.getSource().getEntity() instanceof Player) || !event.getSource().getEntity().hasPermissions(2))) {
+        if (!event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) && event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (!(event.getSource().getEntity() instanceof Player) || !event.getSource().getEntity().hasPermissions(2))) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void livingHurt(LivingHurtEvent event) {
-        if (!event.getSource().isBypassInvul() && event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (event.getEntity() instanceof Player || !(event.getSource().getEntity() instanceof Player) || !event.getSource().getEntity().hasPermissions(2))) {
+        if (!event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) && event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (event.getEntity() instanceof Player || !(event.getSource().getEntity() instanceof Player) || !event.getSource().getEntity().hasPermissions(2))) {
             event.setCanceled(true);
         }
     }

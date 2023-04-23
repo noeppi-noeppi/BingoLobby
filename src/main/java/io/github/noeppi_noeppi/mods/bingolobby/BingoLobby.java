@@ -2,6 +2,9 @@ package io.github.noeppi_noeppi.mods.bingolobby;
 
 import io.github.noeppi_noeppi.mods.bingolobby.commands.LobbyCommands;
 import io.github.noeppi_noeppi.mods.bingolobby.compat.SkyblockIntegration;
+import io.github.noeppi_noeppi.mods.bingolobby.datagen.BingoLobbyBiomes;
+import io.github.noeppi_noeppi.mods.bingolobby.datagen.BingoLobbyDimensionTypes;
+import io.github.noeppi_noeppi.mods.bingolobby.datagen.BingoLobbyDimensions;
 import io.github.noeppi_noeppi.mods.bingolobby.network.LobbyNetwork;
 import io.github.noeppi_noeppi.mods.bingolobby.render.RenderOverlay;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,6 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.moddingx.libx.datagen.DatagenSystem;
 import org.moddingx.libx.mod.ModXRegistration;
 import org.moddingx.libx.registration.RegistrationBuilder;
 
@@ -31,7 +35,6 @@ public final class BingoLobby extends ModXRegistration {
         network = new LobbyNetwork(this);
 
         this.addRegistrationHandler(ModDimensions::init);
-        this.addRegistrationHandler(ModBiomes::init);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerGUIs));
         
@@ -40,6 +43,12 @@ public final class BingoLobby extends ModXRegistration {
         MinecraftForge.EVENT_BUS.register(new LobbyEvents());
         MinecraftForge.EVENT_BUS.register(new BongoEvents());
         MinecraftForge.EVENT_BUS.register(new EventListener());
+
+        DatagenSystem.create(this, system -> {
+            system.addRegistryProvider(BingoLobbyBiomes::new);
+            system.addRegistryProvider(BingoLobbyDimensionTypes::new);
+            system.addRegistryProvider(BingoLobbyDimensions::new);
+        });
     }
     
     @Nonnull
@@ -53,7 +62,7 @@ public final class BingoLobby extends ModXRegistration {
 
     @Override
     protected void initRegistration(RegistrationBuilder builder) {
-        builder.enableRegistryTracking();
+        //
     }
 
     @Override

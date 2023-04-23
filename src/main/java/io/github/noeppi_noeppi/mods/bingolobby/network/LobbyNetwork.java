@@ -10,8 +10,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 
-import org.moddingx.libx.network.NetworkX.Protocol;
-
 public class LobbyNetwork extends NetworkX {
 
     public LobbyNetwork(ModX mod) {
@@ -20,7 +18,7 @@ public class LobbyNetwork extends NetworkX {
 
     @Override
     protected void registerPackets() {
-        this.register(new LobbyUpdateSerializer(), () -> LobbyUpdateHandler::handle, NetworkDirection.PLAY_TO_CLIENT);
+        this.registerGame(NetworkDirection.PLAY_TO_CLIENT, new LobbyUpdateMessage.Serializer(), () -> LobbyUpdateMessage.Handler::new);
     }
 
     @Override
@@ -30,25 +28,25 @@ public class LobbyNetwork extends NetworkX {
 
     public void updateLobby(Level level) {
         if (!level.isClientSide) {
-            this.channel.send(PacketDistributor.ALL.noArg(), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(level)));
+            this.channel.send(PacketDistributor.ALL.noArg(), new LobbyUpdateMessage(Lobby.get(level)));
         }
     }
 
     public void updateLobby(Player player) {
         if (!player.getCommandSenderWorld().isClientSide) {
-            this.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(player.getCommandSenderWorld())));
+            this.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new LobbyUpdateMessage(Lobby.get(player.getCommandSenderWorld())));
         }
     }
 
     public void updateLobby(Level level, BongoMessageType messageType) {
         if (!level.isClientSide) {
-            this.channel.send(PacketDistributor.ALL.noArg(), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(level), messageType));
+            this.channel.send(PacketDistributor.ALL.noArg(), new LobbyUpdateMessage(Lobby.get(level), messageType));
         }
     }
 
     public void updateLobby(Player player, BongoMessageType messageType) {
         if (!player.getCommandSenderWorld().isClientSide) {
-            this.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new LobbyUpdateSerializer.LobbyUpdateMessage(Lobby.get(player.getCommandSenderWorld()), messageType));
+            this.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new LobbyUpdateMessage(Lobby.get(player.getCommandSenderWorld()), messageType));
         }
     }
 }
