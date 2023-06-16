@@ -14,10 +14,10 @@ public class UnvipTeamCommand implements Command<CommandSourceStack> {
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Player player = context.getSource().getPlayerOrException();
-        Lobby lobby = Lobby.get(player.level);
+        Lobby lobby = Lobby.get(player.level());
         DyeColor team = context.getArgument("team", DyeColor.class);
         lobby.setVipTeam(team, false);
-        context.getSource().sendSuccess(Component.translatable("bingolobby.command.vipteamremove", Component.translatable(team.getName())), true);
+        context.getSource().sendSuccess(() -> Component.translatable("bingolobby.command.vipteamremove", Component.translatable(team.getName())), true);
         return 0;
     }
 }

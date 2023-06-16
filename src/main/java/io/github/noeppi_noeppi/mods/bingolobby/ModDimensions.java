@@ -20,11 +20,11 @@ public class ModDimensions {
     
     public static void teleportToLobby(ServerPlayer player, boolean yp) {
         player.getInventory().clearContent();
-        if (player.level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (player.level().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             player.teleportTo(0.5, 65, 0.5);
             player.moveTo(0.5, 65, 0.5, 0, 0);
         } else {
-            ServerLevel destination = player.getLevel().getServer().getLevel(ModDimensions.LOBBY_DIMENSION);
+            ServerLevel destination = player.serverLevel().getServer().getLevel(ModDimensions.LOBBY_DIMENSION);
             if (destination == null) {
                 player.connection.disconnect(Component.literal("BingoLobby failed to load. Please restart server."));
             } else {

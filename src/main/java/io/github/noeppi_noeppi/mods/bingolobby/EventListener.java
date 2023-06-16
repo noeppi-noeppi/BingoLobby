@@ -21,21 +21,21 @@ public class EventListener {
 
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
-        if (!event.player.level.isClientSide && event.player.tickCount % 2 == 1 && event.player.level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && event.player instanceof ServerPlayer) {
-            Bongo bongo = Bongo.get(event.player.level);
+        if (!event.player.level().isClientSide && event.player.tickCount % 2 == 1 && event.player.level().dimension().equals(ModDimensions.LOBBY_DIMENSION) && event.player instanceof ServerPlayer) {
+            Bongo bongo = Bongo.get(event.player.level());
             DyeColor color = null;
             if (!event.player.isSpectator()) {
-                Block block = event.player.level.getBlockState(event.player.blockPosition()).getBlock();
+                Block block = event.player.level().getBlockState(event.player.blockPosition()).getBlock();
                 color = block instanceof WoolCarpetBlock ? ((WoolCarpetBlock) block).getColor() : null;
                 if (color == null) {
-                    block = event.player.level.getBlockState(event.player.blockPosition().below()).getBlock();
+                    block = event.player.level().getBlockState(event.player.blockPosition().below()).getBlock();
                     color = block instanceof WoolCarpetBlock ? ((WoolCarpetBlock) block).getColor() : null;
                 }
             }
             if (bongo.active() && !bongo.running() && !bongo.won()) {
                 Team team = color == null ? null : bongo.getTeam(color);
                 if (team == null || !team.hasPlayer(event.player)) {
-                    Lobby lobby = Lobby.get(event.player.level);
+                    Lobby lobby = Lobby.get(event.player.level());
                     MutableComponent tc = lobby.canAccess(event.player, team);
                     if (tc != null) {
                         event.player.sendSystemMessage(tc.withStyle(ChatFormatting.AQUA));

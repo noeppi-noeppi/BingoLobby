@@ -20,7 +20,7 @@ public class LobbyEvents {
 
     @SubscribeEvent
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !event.getEntity().hasPermissions(2)) {
+        if (event.getEntity().level().dimension().equals(ModDimensions.LOBBY_DIMENSION) && !event.getEntity().hasPermissions(2)) {
             if (event.isCancelable()) {
                 event.setCanceled(true);
             }
@@ -31,8 +31,8 @@ public class LobbyEvents {
     public void mobGrief(EntityMobGriefingEvent event) {
         try {
             //noinspection ConstantConditions
-            if (event.getEntity() != null && event.getEntity().level != null && event.getEntity().level.dimension() != null) {
-                if (event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+            if (event.getEntity() != null && event.getEntity().level() != null && event.getEntity().level().dimension() != null) {
+                if (event.getEntity().level().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
                     event.setResult(Event.Result.DENY);
                 }
             }
@@ -50,7 +50,7 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void blockBreak(BlockEvent.BreakEvent event) {
-        if (event.getPlayer().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && !event.getPlayer().hasPermissions(2)) {
+        if (event.getPlayer().level().dimension().equals(ModDimensions.LOBBY_DIMENSION) && !event.getPlayer().hasPermissions(2)) {
             event.setCanceled(true);
         }
     }
@@ -75,7 +75,7 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void farmlandTrample(BlockEvent.FarmlandTrampleEvent event) {
-        if (event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (event.getEntity().level().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.setCanceled(true);
         }
     }
@@ -98,7 +98,7 @@ public class LobbyEvents {
     public void mobSpawnAttempt(MobSpawnEvent.FinalizeSpawn event) {
         Level level;
         if (event.getLevel() instanceof Level) level = (Level) event.getLevel();
-        else level = event.getEntity().level;
+        else level = event.getEntity().level();
         if (level != null && level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.setCanceled(true);
             event.setSpawnCancelled(true);
@@ -107,21 +107,21 @@ public class LobbyEvents {
     
     @SubscribeEvent
     public void livingAttack(LivingAttackEvent event) {
-        if (!event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) && event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (!(event.getSource().getEntity() instanceof Player) || !event.getSource().getEntity().hasPermissions(2))) {
+        if (!event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) && event.getEntity().level().dimension().equals(ModDimensions.LOBBY_DIMENSION) && (!(event.getSource().getEntity() instanceof Player) || !event.getSource().getEntity().hasPermissions(2))) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void livingHurt(LivingHurtEvent event) {
-        if (!event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) && event.getEntity().level.dimension().equals(ModDimensions.LOBBY_DIMENSION) && (event.getEntity() instanceof Player || !(event.getSource().getEntity() instanceof Player) || !event.getSource().getEntity().hasPermissions(2))) {
+        if (!event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) && event.getEntity().level().dimension().equals(ModDimensions.LOBBY_DIMENSION) && (event.getEntity() instanceof Player || !(event.getSource().getEntity() instanceof Player) || !event.getSource().getEntity().hasPermissions(2))) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
-        if (!event.player.level.isClientSide && !event.player.isDeadOrDying() && event.player.tickCount % 20 == 0 && event.player.level.dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
+        if (!event.player.level().isClientSide && !event.player.isDeadOrDying() && event.player.tickCount % 20 == 0 && event.player.level().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
             event.player.setHealth(20);
             event.player.getFoodData().setFoodLevel(20);
             event.player.setAirSupply(event.player.getMaxAirSupply());

@@ -1,7 +1,6 @@
 package io.github.noeppi_noeppi.mods.bingolobby.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.noeppi_noeppi.mods.bingolobby.Lobby;
 import io.github.noeppi_noeppi.mods.bingolobby.ModDimensions;
 import io.github.noeppi_noeppi.mods.bingolobby.config.LobbyConfig;
@@ -11,7 +10,7 @@ import io.github.noeppi_noeppi.mods.bongo.data.Team;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
@@ -35,9 +34,9 @@ public class RenderOverlay implements IGuiOverlay {
     private static final int padding = 4;
 
     @Override
-    public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int windowWidth, int windowHeight) {
+    public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int windowWidth, int windowHeight) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level != null && mc.player != null && ModDimensions.LOBBY_DIMENSION.equals(mc.player.level.dimension()) && (mc.screen == null || mc.screen instanceof ChatScreen) && !Keybinds.BIG_OVERLAY.isDown()) {
+        if (mc.level != null && mc.player != null && ModDimensions.LOBBY_DIMENSION.equals(mc.player.level().dimension()) && (mc.screen == null || mc.screen instanceof ChatScreen) && !Keybinds.BIG_OVERLAY.isDown()) {
             gui.setupOverlayRenderState(true, false);
 
             Bongo bongo = Bongo.get(mc.level);
@@ -106,66 +105,63 @@ public class RenderOverlay implements IGuiOverlay {
             double totalWidth = width * scaleFactor;
             double totalHeight = height * scaleFactor;
             
-            poseStack.pushPose();
-            poseStack.translate(windowWidth - totalWidth, (windowHeight / 2d) - (totalHeight / 2), 0);
-            poseStack.scale((float) scaleFactor, (float) scaleFactor, 1);
+            graphics.pose().pushPose();
+            graphics.pose().translate(windowWidth - totalWidth, (windowHeight / 2d) - (totalHeight / 2), 0);
+            graphics.pose().scale((float) scaleFactor, (float) scaleFactor, 1);
             
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            RenderSystem.setShaderTexture(0, RenderHelper.TEXTURE_WHITE);
             RenderSystem.setShaderColor(0, 0, 0, (float) (double) mc.options.textBackgroundOpacity().get());
-            GuiComponent.blit(poseStack, 0, 0, 0, 0, width, height, 256, 256);
+            graphics.blit(RenderHelper.TEXTURE_WHITE, 0, 0, 0, 0, width, height, 256, 256);
             RenderSystem.disableBlend();
 
-            poseStack.translate(padding, padding, 100);
+            graphics.pose().translate(padding, padding, 100);
             
-            this.renderLine(poseStack, font, LobbyConfig.title, 0, width);
+            this.renderLine(graphics, font, LobbyConfig.title, 0, width);
 
-            RenderSystem.setShaderTexture(0, RenderHelper.TEXTURE_WHITE);
             RenderHelper.rgb(0x00FF5B);
-            GuiComponent.blit(poseStack, 0, padding + font.lineHeight + (padding / 2), 0, 0, width - (2 * padding), 1, 256, 256);
+            graphics.blit(RenderHelper.TEXTURE_WHITE, 0, padding + font.lineHeight + (padding / 2), 0, 0, width - (2 * padding), 1, 256, 256);
 
             if (!LobbyConfig.subtitle.isEmpty()) {
                 if (countdown != null && !LobbyConfig.countdown_in_subtitle2) {
-                    this.renderLine(poseStack, font, countdown, (float) ((font.lineHeight + padding) + (2 * padding)), width);
+                    this.renderLine(graphics, font, countdown, (float) ((font.lineHeight + padding) + (2 * padding)), width);
                 } else {
                     int subtitleIdx = (ClientTickHandler.ticksInGame() / 60) % LobbyConfig.subtitle.size();
-                    this.renderLine(poseStack, font, LobbyConfig.subtitle.get(subtitleIdx), (float) ((font.lineHeight + padding) + (2 * padding)), width);
+                    this.renderLine(graphics, font, LobbyConfig.subtitle.get(subtitleIdx), (float) ((font.lineHeight + padding) + (2 * padding)), width);
                 }
             }
             
             if (!LobbyConfig.subtitle2.isEmpty()) {
                 if (countdown != null && LobbyConfig.countdown_in_subtitle2) {
-                    this.renderLine(poseStack, font, countdown, (float) ((font.lineHeight + padding) + (2 * padding)), width);
+                    this.renderLine(graphics, font, countdown, (float) ((font.lineHeight + padding) + (2 * padding)), width);
                 } else {
                     int subtitleIdx = (ClientTickHandler.ticksInGame() / 60) % LobbyConfig.subtitle2.size();
-                    this.renderLine(poseStack, font, LobbyConfig.subtitle2.get(subtitleIdx), (float) (((LobbyConfig.subtitle.isEmpty() ? 1 : 2) * (font.lineHeight + padding)) + (2 * padding)), width);
+                    this.renderLine(graphics, font, LobbyConfig.subtitle2.get(subtitleIdx), (float) (((LobbyConfig.subtitle.isEmpty() ? 1 : 2) * (font.lineHeight + padding)) + (2 * padding)), width);
                 }
             }
             
             int lines = 1;
             if (!LobbyConfig.subtitle.isEmpty()) lines += 1;
             if (!LobbyConfig.subtitle2.isEmpty()) lines += 1;
-            poseStack.translate(0, (lines * (font.lineHeight + padding)) + (3 * padding) + 1, 0);
+            graphics.pose().translate(0, (lines * (font.lineHeight + padding)) + (3 * padding) + 1, 0);
             
-            RenderSystem.setShaderTexture(0, RenderHelper.TEXTURE_WHITE);
             RenderHelper.rgb(0x00FF5B);
-            GuiComponent.blit(poseStack, 0, -(padding / 2), 0, 0, width - (2 * padding), 1, 256, 256);
+            graphics.blit(RenderHelper.TEXTURE_WHITE, 0, -(padding / 2), 0, 0, width - (2 * padding), 1, 256, 256);
             
-            this.renderLine(poseStack, font, playersOnline, padding, width);
-            this.renderLine(poseStack, font, perTeam, (2 * padding) + font.lineHeight, width);
+            this.renderLine(graphics, font, playersOnline, padding, width);
+            this.renderLine(graphics, font, perTeam, (2 * padding) + font.lineHeight, width);
             
-            this.renderLine(poseStack, font, status, (4 * padding) + (2 * font.lineHeight), width);
-            this.renderLine(poseStack, font, teamText, (5 * padding) + (3 * font.lineHeight), width);
+            this.renderLine(graphics, font, status, (4 * padding) + (2 * font.lineHeight), width);
+            this.renderLine(graphics, font, teamText, (5 * padding) + (3 * font.lineHeight), width);
             
             RenderHelper.resetColor();
-            poseStack.popPose();
+            graphics.pose().popPose();
         }
     }
 
-    private void renderLine(PoseStack poseStack, Font font, Component line, double y, int width) {
+    private void renderLine(GuiGraphics graphics, Font font, Component line, double y, int width) {
         double x = Math.max(0, ((width - (2 * padding)) / 2d) - (font.width(line) / 2d));
         RenderHelper.resetColor();
-        font.drawShadow(poseStack, line, (float) x, (float) y, 0xFFFFFF);
+        graphics.drawString(font, line.getVisualOrderText(), (float) x, (float) y, 0xFFFFFF, true);
     }
 }

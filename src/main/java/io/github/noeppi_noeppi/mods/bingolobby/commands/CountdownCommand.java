@@ -27,7 +27,7 @@ public class CountdownCommand implements Command<CommandSourceStack> {
         int countdown = context.getArgument("countdown", Integer.class);
         lobby.setCountdown(countdown);
         
-        context.getSource().sendSuccess(Component.translatable("bingolobby.countdown.set", Integer.toString(countdown / 60), Integer.toString(countdown % 60)), true);
+        context.getSource().sendSuccess(() -> Component.translatable("bingolobby.countdown.set", Integer.toString(countdown / 60), Integer.toString(countdown % 60)), true);
 
         return 0;
     }

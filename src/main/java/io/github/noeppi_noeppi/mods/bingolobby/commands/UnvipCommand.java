@@ -17,11 +17,11 @@ public class UnvipCommand implements Command<CommandSourceStack> {
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Player player = context.getSource().getPlayerOrException();
-        Lobby lobby = Lobby.get(player.level);
+        Lobby lobby = Lobby.get(player.level());
         EntitySelector vipSelector = context.getArgument("players", EntitySelector.class);
         List<ServerPlayer> players = vipSelector.findPlayers(context.getSource());
         players.forEach(p -> lobby.setVip(p, false));
-        context.getSource().sendSuccess(Component.translatable("bingolobby.command.vipremove", Integer.toString(players.size())), true);
+        context.getSource().sendSuccess(() -> Component.translatable("bingolobby.command.vipremove", Integer.toString(players.size())), true);
 
         return 0;
     }
