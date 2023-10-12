@@ -122,7 +122,7 @@ public class LobbyEvents {
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
         if (!event.player.level().isClientSide && !event.player.isDeadOrDying() && event.player.tickCount % 20 == 0 && event.player.level().dimension().equals(ModDimensions.LOBBY_DIMENSION)) {
-            event.player.setHealth(20);
+            event.player.setHealth(Math.max(1, event.player.getMaxHealth()));
             event.player.getFoodData().setFoodLevel(20);
             event.player.setAirSupply(event.player.getMaxAirSupply());
             event.player.setRemainingFireTicks(0);
